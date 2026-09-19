@@ -1818,3 +1818,12 @@ html:not(.cur-on) .cur-ring,html:not(.cur-on) .cur-dot{display:none!important}
 .v6-more{display:inline-flex;margin-top:10px;font-size:14px}
 .v6 .nav-inline a{white-space:nowrap;padding:9px 13px;font-size:14px}
 .v6 .cmdk-btn span{display:none}
+.v6-shot{position:relative}
+.v6-dd{right:120px;top:-54px;font-size:24px}
+.v6-dd .dd-arrow{right:-74px;top:4px}
+@media(max-width:980px){.v6-dd{right:90px;top:-44px;font-size:21px}}
+@media(max-width:600px){.v6-dd{right:auto;left:0;top:-40px}.v6-dd .dd-arrow{display:none}}
+.nw{white-space:nowrap}
+.v6 .nav-overlay{overflow-y:auto;-webkit-overflow-scrolling:touch;background:color-mix(in srgb,var(--ink-950) 96%,transparent)}
+@media(max-width:600px){.v6 .nav-list a{font-size:26px;padding:7px 0}.v6 .nav-list a .idx{font-size:10px}}
+@media(max-height:760px) and (max-width:600px){.v6 .nav-list a{font-size:23px;padding:5px 0}}
