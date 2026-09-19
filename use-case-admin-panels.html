@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en" class="v6" data-mascot="off">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Admin panels and back office, Solviqo</title>
+<meta name="description" content="Manage customers, orders, accounts and settings from one fast admin panel, with the right permissions for every role and a log of every change.">
+<meta name="theme-color" content="#05070C">
+<meta property="og:title" content="Admin panels and back office, Solviqo">
+<meta property="og:description" content="Manage customers, orders, accounts and settings from one fast admin panel, with the right permissions for every role and a log of every change.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://nisarg2810.github.io/solviqov6/use-case-admin-panels.html">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 240'%3E%3Crect width='240' height='240' rx='48' fill='%2305070C'/%3E%3Cg transform='translate(70,168) rotate(-25) scale(0.62)'%3E%3Cpolyline points='-27,-30 28,0 -27,30' fill='none' stroke='%235B6779' stroke-width='18'/%3E%3C/g%3E%3Cg transform='translate(118,128) rotate(-12) scale(0.82)'%3E%3Cpolyline points='-27,-30 28,0 -27,30' fill='none' stroke='%239FAABA' stroke-width='18'/%3E%3C/g%3E%3Cg transform='translate(172,72) rotate(2) scale(1.05)'%3E%3Cpolyline points='-27,-30 28,0 -27,30' fill='none' stroke='%23E2E8F0' stroke-width='18'/%3E%3C/g%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Caveat:wght@600;700&display=swap">
+<link rel="stylesheet" href="assets/site.css?v=30">
+<script>(function(){try{var t=localStorage.getItem('solviqo-theme');if(!t)t=matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',t);}catch(e){document.documentElement.setAttribute('data-theme','dark');}})();</script>
+<script>try{if(!sessionStorage.getItem('sv-seen')&&!matchMedia('(prefers-reduced-motion: reduce)').matches)document.documentElement.classList.add('is-loading');}catch(e){}</script>
+</head>
+<body>
+<div class="loader" aria-hidden="true"><div class="ld-in">
+  <svg class="ld-mark" viewBox="0 0 240 240"><g fill="none" stroke-width="18" stroke-linecap="square">
+    <g transform="translate(70,168) rotate(-25) scale(0.62)"><polyline class="ld-c1" points="-27,-30 28,0 -27,30"/></g>
+    <g transform="translate(118,128) rotate(-12) scale(0.82)"><polyline class="ld-c2" points="-27,-30 28,0 -27,30"/></g>
+    <g transform="translate(172,72) rotate(2) scale(1.05)"><polyline class="ld-c3" points="-27,-30 28,0 -27,30"/></g></g></svg>
+  <div class="ld-bar"><i></i></div>
+</div></div>
+<a class="skip" href="#main">Skip to content</a>
+<div class="mesh" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
+
+<header class="site-header">
+  <div class="nav-row">
+    <a class="brand" href="index.html" aria-label="Solviqo home">
+      <svg viewBox="0 0 240 240" aria-hidden="true">
+        <g transform="translate(70,168) rotate(-25) scale(0.62)"><polyline points="-27,-30 28,0 -27,30" fill="none" stroke="#5B6779" stroke-width="18" stroke-linecap="square"/></g>
+        <g transform="translate(118,128) rotate(-12) scale(0.82)"><polyline points="-27,-30 28,0 -27,30" fill="none" stroke="#9FAABA" stroke-width="18" stroke-linecap="square"/></g>
+        <g transform="translate(172,72) rotate(2) scale(1.05)"><polyline points="-27,-30 28,0 -27,30" fill="none" stroke="#E2E8F0" stroke-width="18" stroke-linecap="square"/></g>
+      </svg>
+      <span>Solviqo</span>
+    </a>
+    <nav class="nav-inline" aria-label="Main">
+      <div class="ni-item has-dd"><a href="services.html">Services<svg class="ni-c" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 9l6 6 6-6"/></svg></a><div class="ni-dd dd2"><a href="service-web-apps.html"><b>Web Apps</b><small>Web apps your customers actually enjoy.</small></a><a href="service-internal-tools.html"><b>Internal Tools</b><small>Internal tools that end the spreadsheet.</small></a><a href="service-integrations.html"><b>Integrations</b><small>Your systems, finally talking to each other.</small></a><a href="service-dashboards.html"><b>Dashboards</b><small>Dashboards people actually open.</small></a><a class="ni-all" href="services.html">All services overview &rarr;</a></div></div>
+      <div class="ni-item has-dd"><a href="use-cases.html" class="active" aria-current="page">Use cases<svg class="ni-c" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 9l6 6 6-6"/></svg></a><div class="ni-dd dd3"><a href="use-case-approvals.html"><b>Approvals and sign offs</b></a><a href="use-case-case-management.html"><b>Case and ticket management</b></a><a href="use-case-inspections.html"><b>Inspections and audits</b></a><a href="use-case-asset-tracking.html"><b>Asset and equipment tracking</b></a><a href="use-case-inventory.html"><b>Inventory and stock</b></a><a href="use-case-scheduling.html"><b>Scheduling and bookings</b></a><a href="use-case-portals.html"><b>Customer and vendor portals</b></a><a href="use-case-admin-panels.html"><b>Admin panels and back office</b></a><a href="use-case-dashboards.html"><b>Dashboards and reporting</b></a><a href="use-case-forms.html"><b>Forms and data capture</b></a><a href="use-case-integrations.html"><b>ERP and CRM integrations</b></a><a href="use-case-alerts.html"><b>Alerts, reminders and escalations</b></a><a class="ni-all" href="use-cases.html">Browse all use cases &rarr;</a></div></div>
+      <div class="ni-item has-dd"><a href="industries.html">Industries<svg class="ni-c" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 9l6 6 6-6"/></svg></a><div class="ni-dd dd2"><a href="industry-construction.html"><b>Construction and contracting</b></a><a href="industry-facilities.html"><b>Facilities management</b></a><a href="industry-logistics.html"><b>Logistics and fleet</b></a><a href="industry-energy.html"><b>Oil, gas and energy</b></a><a href="industry-manufacturing.html"><b>Manufacturing</b></a><a href="industry-healthcare.html"><b>Healthcare and clinics</b></a><a href="industry-retail.html"><b>Retail and distribution</b></a><a href="industry-startups.html"><b>Startups and new products</b></a><a class="ni-all" href="industries.html">All industries &rarr;</a></div></div>
+      <div class="ni-item"><a href="case-studies.html">Case studies</a></div>
+      <div class="ni-item"><a href="about.html">About</a></div>
+      <div class="ni-item"><a href="blog.html">Blog</a></div>
+    </nav>
+    <div class="nav-right">
+      <button class="cmdk-btn" id="cmdkBtn" type="button" aria-label="Search the site"></button>
+      <a class="btn btn-primary btn-sm" href="contact.html">Book a call<span class="shine"></span></a>
+      <button id="themeBtn" class="theme-btn" aria-label="Switch to light mode" aria-pressed="false">
+        <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2.4M12 19.6V22M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2 12h2.4M19.6 12H22M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></svg>
+        <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M20 14.2A8.2 8.2 0 1 1 9.8 4a6.6 6.6 0 0 0 10.2 10.2z"/></svg>
+      </button>
+      <button id="navToggle" class="nav-toggle" aria-label="Open menu" aria-expanded="false">
+        <span class="ln"></span><span class="ln"></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<div id="navOverlay" class="nav-overlay">
+  <div class="wrap">
+    <nav class="nav-list">
+      <a href="index.html"><span class="idx">01</span>Home</a>
+      <a href="services.html"><span class="idx">02</span>Services</a>
+      <a href="use-cases.html" class="active"><span class="idx">03</span>Use cases</a>
+      <a href="industries.html"><span class="idx">04</span>Industries</a>
+      <a href="case-studies.html"><span class="idx">05</span>Case studies</a>
+      <a href="about.html"><span class="idx">06</span>About</a>
+      <a href="blog.html"><span class="idx">07</span>Blog</a>
+      <a href="contact.html"><span class="idx">08</span>Contact</a>
+    </nav>
+    <div class="nav-foot">
+      <a href="mailto:studio@solviqo.com">studio@solviqo.com</a>
+      <span>India · working worldwide</span>
+      <a class="btn btn-primary" href="contact.html">Book a scoping call<span class="shine"></span></a>
+    </div>
+  </div>
+</div>
+
+<main id="main" tabindex="-1">
+
+  <section class="v6-hero">
+    <div class="wrap">
+      <nav class="crumbs rev" aria-label="Breadcrumb"><a href="index.html">Home</a> <span>/</span> <a href="use-cases.html">Use cases</a> <span>/</span> <em>Admin panels and back office</em></nav>
+      <div class="v6-hgrid">
+        <div class="rev"><span class="kick"><b>01</b> Use case</span><h1 class="v6-h1" data-split="1">Your whole back office, in <span class="squig">one place<svg viewBox="0 0 200 14" preserveAspectRatio="none"><path d="M2 8 Q 12 2 22 8 T 42 8 T 62 8 T 82 8 T 102 8 T 122 8 T 142 8 T 162 8 T 182 8 T 198 8"/></svg></span>.</h1><p class="lede">Manage customers, orders, accounts and settings from one fast admin panel, with the right permissions for every role and a log of every change.</p>
+          <div class="hero-cta"><a class="btn btn-primary btn-lg" href="contact.html">Book a 20 minute call<span class="shine"></span></a><a class="btn btn-ghost btn-lg" href="#how">See how it works</a></div></div>
+        <div class="v6-shot rev"><figure class="shot t-table" style="--acc:#E8890C" aria-hidden="true"><div class="sh-win"><div class="sh-chrome"><i></i><i></i><i></i><div class="sh-tab">Back office</div><div class="sh-url"><b>&#128274;</b>admin.yourcompany.com/customers</div></div><div class="sh-app"><aside class="sh-side"><div class="sh-logo">B</div><span class="sh-nv"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg><em>Home</em></span><span class="sh-nv on"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg><em>Customers</em></span><span class="sh-nv"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h5"/></svg><em>Orders</em></span><span class="sh-nv"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg><em>Messages</em></span><span class="sh-nv"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><em>Settings</em></span></aside><div class="sh-main"><div class="sh-top"><b class="sh-title">Customers</b><span class="sh-search"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>Search</span><span class="sh-bell"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg><i></i></span><span class="sh-avt" style="background:#E8890C">NM</span></div><div class="sh-bar"><span class="sh-chip on">All</span><span class="sh-chip">Open</span><span class="sh-chip">Due soon</span><span class="sh-chip"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 3H2l8 9.5V19l4 2v-8.5z"/></svg>Filter</span><span class="sh-btn"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>Add customer</span></div><div class="sh-table" style="--gtc:5.5em 1.6fr 1fr 1fr 8.5em"><div class="sh-th"><span>ID</span><span>Customer</span><span>Plan</span><span>Region</span><span>Status</span></div><div class="sh-row newrow"><span class="c-id">CU-8812</span><span class="c-name"><span class="sh-avt" style="background:#4C7DFF">NR</span>Northwind Retail</span><span>Enterprise</span><span>Dubai</span><span class="c-st"><span class="sh-pill t-blue">New</span></span></div><div class="sh-row"><span class="c-id">CU-8807</span><span class="c-name"><span class="sh-avt" style="background:#10B981">BH</span>Blue Harbor Co</span><span>Growth</span><span>Mumbai</span><span class="c-st"><span class="sh-pill t-green">Active</span></span></div><div class="sh-row"><span class="c-id">CU-8801</span><span class="c-name"><span class="sh-avt" style="background:#8B5CF6">SF</span>Summit Foods</span><span>Growth</span><span>Riyadh</span><span class="c-st flipst"><span class="sh-pill t-amber">Review</span><span class="sh-pill t-green">Active</span></span></div><div class="sh-row"><span class="c-id">CU-8795</span><span class="c-name"><span class="sh-avt" style="background:#EF4444">GC</span>Greenline Clinics</span><span>Starter</span><span>Pune</span><span class="c-st"><span class="sh-pill t-green">Active</span></span></div><div class="sh-row"><span class="c-id">CU-8790</span><span class="c-name"><span class="sh-avt" style="background:#0EA5E9">AL</span>Atlas Logistics</span><span>Enterprise</span><span>Doha</span><span class="c-st"><span class="sh-pill t-gray">Paused</span></span></div></div><div class="sh-toast"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Summit Foods reactivated. Audit log updated.</div></div></div></div><span class="sh-cursor"></span><span class="sh-live"><i></i>Live preview</span></figure></div>
+      </div>
+    </div>
+  </section>
+  <section class="sec">
+    <div class="wrap">
+      <div class="sec-h rev"><span class="kick"><b>02</b> The problem</span><h2>Sound familiar?</h2></div>
+      <div class="grid3 stag"><div class="card" data-tilt="6"><span class="num">01</span><h3>Five tools for one task</h3><p>Support jumps between systems to answer one question.</p></div><div class="card" data-tilt="6"><span class="num">02</span><h3>Risky direct edits</h3><p>People edit the database or spreadsheet directly.</p></div><div class="card" data-tilt="6"><span class="num">03</span><h3>No change history</h3><p>Nobody knows who changed what.</p></div></div>
+    </div>
+  </section>
+  <section class="sec" id="how">
+    <div class="wrap">
+      <div class="sec-h rev"><span class="kick"><b>03</b> What we build</span><h2>Everything the work needs, nothing it does not.</h2><p>Every app is built around your real process. These are the parts teams ask for most.</p></div>
+      <div class="v6-feats stag"><div class="v6-feat"><span><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span><div><b>Unified records</b><p>Everything about a customer or order on one screen.</p></div></div><div class="v6-feat"><span><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg></span><div><b>Safe actions</b><p>Refunds, resets and updates as buttons, not SQL.</p></div></div><div class="v6-feat"><span><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></span><div><b>Role based access</b><p>Each team sees and does only what it should.</p></div></div><div class="v6-feat"><span><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></span><div><b>Audit log</b><p>Every change recorded with who and when.</p></div></div><div class="v6-feat"><span><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h5"/></svg></span><div><b>Bulk actions</b><p>Update hundreds of records safely.</p></div></div><div class="v6-feat"><span><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg></span><div><b>Search everything</b><p>Find any record in seconds.</p></div></div></div>
+      <div class="ba rev"><div class="panel before"><h4>Before</h4><ul><li>Switching between tools</li><li>Direct database edits</li><li>No record of changes</li></ul></div><div class="panel after"><h4>After</h4><ul><li>One screen per customer</li><li>Safe, one click actions</li><li>A full change history</li></ul></div></div>
+    </div>
+  </section>
+  <section class="sec">
+    <div class="wrap">
+      <div class="sec-h rev"><span class="kick"><b>04</b> How it works</span><h2>From first call to a working app.</h2></div>
+      <div class="steps rev" id="steps"><div class="spine" aria-hidden="true"><i></i></div><div class="step"><span class="t">Step 1</span><h3>Scope</h3><p>A short call. We map how the work flows today and agree what the first version does.</p></div><div class="step"><span class="t">Step 2</span><h3>Design</h3><p>Clickable screens you can try with your team before anything is built.</p></div><div class="step"><span class="t">Step 3</span><h3>Build</h3><p>Real data, sign in, roles, alerts and connections to your systems.</p></div><div class="step"><span class="t">Step 4</span><h3>Launch</h3><p>Your team starts using it. We stay close and improve it from real use.</p></div></div>
+    </div>
+  </section>
+  <section class="sec">
+    <div class="wrap v6-rel">
+      <div class="rev"><span class="kick"><b>05</b> Where it fits</span><h3>Popular in</h3><div class="v6-chips"><a href="industry-startups.html">Startups and new products</a><a href="industry-retail.html">Retail and distribution</a><a href="industry-healthcare.html">Healthcare and clinics</a><a href="industry-logistics.html">Logistics and fleet</a></div><h3 style="margin-top:22px">Built as part of</h3><div class="v6-chips"><a href="service-internal-tools.html">Internal Tools</a><a href="service-web-apps.html">Web Apps</a></div></div>
+      <div class="rev"></div>
+    </div>
+  </section>
+  <section class="sec">
+    <div class="wrap"><div class="sec-h rev"><span class="kick"><b>06</b> More use cases</span><h2>Other things we build.</h2></div><div class="uc-grid small stag"><a class="uc-card" href="use-case-approvals.html" data-ind="construction facilities manufacturing retail"><div class="uc-mini"></div><div class="uc-body"><span class="uc-team">Operations, Finance</span><h3>Approvals and sign offs</h3><p>Approvals in one tap, not one week.</p><span class="card-link">Explore <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div></a><a class="uc-card" href="use-case-case-management.html" data-ind="construction facilities healthcare energy"><div class="uc-mini"></div><div class="uc-body"><span class="uc-team">Operations, Compliance, Support</span><h3>Case and ticket management</h3><p>Every case has an owner and a deadline.</p><span class="card-link">Explore <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div></a><a class="uc-card" href="use-case-inspections.html" data-ind="construction logistics energy manufacturing"><div class="uc-mini"></div><div class="uc-body"><span class="uc-team">Safety, Fleet, Quality</span><h3>Inspections and audits</h3><p>Inspections done on a phone, in minutes.</p><span class="card-link">Explore <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div></a></div>
+    <div style="margin-top:28px"><a class="btn btn-ghost" href="use-cases.html">See all use cases</a></div></div>
+  </section>
+  <section class="sec">
+    <div class="wrap"><div class="panel pad rev" style="text-align:center;padding:66px 34px">
+      <h2 class="chrome-text" style="font-size:clamp(26px,3vw,38px)">Tell us what is slowing your team down.</h2>
+      <p style="color:var(--t2);margin:18px auto 0;max-width:52ch">Twenty minutes is enough to know if we can help. No pitch deck, just a straight answer.</p>
+      <div style="margin-top:30px"><a class="btn btn-primary btn-lg" href="contact.html">Book a call<span class="shine"></span></a></div>
+    </div></div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="foot-top">
+      <div class="foot-brand">
+        <a class="brand" href="index.html" aria-label="Solviqo home"><svg viewBox="0 0 240 240" aria-hidden="true">
+        <g transform="translate(70,168) rotate(-25) scale(0.62)"><polyline points="-27,-30 28,0 -27,30" fill="none" stroke="#5B6779" stroke-width="18" stroke-linecap="square"/></g>
+        <g transform="translate(118,128) rotate(-12) scale(0.82)"><polyline points="-27,-30 28,0 -27,30" fill="none" stroke="#9FAABA" stroke-width="18" stroke-linecap="square"/></g>
+        <g transform="translate(172,72) rotate(2) scale(1.05)"><polyline points="-27,-30 28,0 -27,30" fill="none" stroke="#E2E8F0" stroke-width="18" stroke-linecap="square"/></g>
+      </svg><span>Solviqo</span></a>
+        <p>A custom software studio based in India. Web apps, internal tools, integrations and dashboards, shipped in weeks, not quarters.</p>
+      </div>
+      <div class="foot-col"><h4>Studio</h4><ul>
+        <li><a href="about.html">About</a></li><li><a href="services.html">Services</a></li>
+        <li><a href="case-studies.html">Case Studies</a></li><li><a href="blog.html">Blog</a></li></ul></div>
+      <div class="foot-col"><h4>Services</h4><ul><li><a href="service-web-apps.html">Web Apps</a></li><li><a href="service-internal-tools.html">Internal Tools</a></li><li><a href="service-integrations.html">Integrations</a></li><li><a href="service-dashboards.html">Dashboards</a></li></ul></div><div class="foot-col"><h4>Use cases</h4><ul><li><a href="use-case-approvals.html">Approvals and sign offs</a></li><li><a href="use-case-case-management.html">Case and ticket management</a></li><li><a href="use-case-inspections.html">Inspections and audits</a></li><li><a href="use-case-asset-tracking.html">Asset and equipment tracking</a></li><li><a href="use-case-inventory.html">Inventory and stock</a></li><li><a href="use-case-scheduling.html">Scheduling and bookings</a></li><li><a href="use-cases.html">All use cases</a></li></ul></div><div class="foot-col"><h4>Industries</h4><ul><li><a href="industry-construction.html">Construction and contracting</a></li><li><a href="industry-facilities.html">Facilities management</a></li><li><a href="industry-logistics.html">Logistics and fleet</a></li><li><a href="industry-energy.html">Oil, gas and energy</a></li><li><a href="industry-manufacturing.html">Manufacturing</a></li><li><a href="industry-healthcare.html">Healthcare and clinics</a></li><li><a href="industries.html">All industries</a></li></ul></div>
+      <div class="foot-col"><h4>Contact</h4><ul>
+        <li><a href="mailto:studio@solviqo.com">studio@solviqo.com</a></li>
+        <li><a href="contact.html">Book a call</a></li>
+        <li><span style="color:var(--t2);font-size:14.5px">India (IST)</span></li></ul></div>
+    </div>
+    <div class="foot-bottom">
+      <p>SOLVIQO STUDIO 2026 / CUSTOM SOFTWARE, BUILT IN INDIA FOR TEAMS ANYWHERE</p>
+      <p>ARTWORK ON THIS SITE IS GENERATED FROM THE BRAND SYSTEM</p>
+    </div>
+  </div>
+</footer>
+
+<script>window.SV_PAGES=[["Service", "Web Apps", "service-web-apps.html"], ["Service", "Internal Tools", "service-internal-tools.html"], ["Service", "Integrations", "service-integrations.html"], ["Service", "Dashboards", "service-dashboards.html"], ["Use case", "Approvals and sign offs", "use-case-approvals.html"], ["Use case", "Case and ticket management", "use-case-case-management.html"], ["Use case", "Inspections and audits", "use-case-inspections.html"], ["Use case", "Asset and equipment tracking", "use-case-asset-tracking.html"], ["Use case", "Inventory and stock", "use-case-inventory.html"], ["Use case", "Scheduling and bookings", "use-case-scheduling.html"], ["Use case", "Customer and vendor portals", "use-case-portals.html"], ["Use case", "Admin panels and back office", "use-case-admin-panels.html"], ["Use case", "Dashboards and reporting", "use-case-dashboards.html"], ["Use case", "Forms and data capture", "use-case-forms.html"], ["Use case", "ERP and CRM integrations", "use-case-integrations.html"], ["Use case", "Alerts, reminders and escalations", "use-case-alerts.html"], ["Industry", "Construction and contracting", "industry-construction.html"], ["Industry", "Facilities management", "industry-facilities.html"], ["Industry", "Logistics and fleet", "industry-logistics.html"], ["Industry", "Oil, gas and energy", "industry-energy.html"], ["Industry", "Manufacturing", "industry-manufacturing.html"], ["Industry", "Healthcare and clinics", "industry-healthcare.html"], ["Industry", "Retail and distribution", "industry-retail.html"], ["Industry", "Startups and new products", "industry-startups.html"], ["Page", "Use cases", "use-cases.html"], ["Page", "Industries", "industries.html"]];</script>
+<script src="assets/site.js?v=17"></script>
+<script src="assets/features.js?v=9"></script>
+<script src="assets/home-oti.js?v=1"></script>
+<script src="assets/vsl.js?v=1"></script>
+</body>
+</html>
