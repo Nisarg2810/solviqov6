@@ -1827,3 +1827,9 @@ html:not(.cur-on) .cur-ring,html:not(.cur-on) .cur-dot{display:none!important}
 .v6 .nav-overlay{overflow-y:auto;-webkit-overflow-scrolling:touch;background:color-mix(in srgb,var(--ink-950) 96%,transparent)}
 @media(max-width:600px){.v6 .nav-list a{font-size:26px;padding:7px 0}.v6 .nav-list a .idx{font-size:10px}}
 @media(max-height:760px) and (max-width:600px){.v6 .nav-list a{font-size:23px;padding:5px 0}}
+
+/* founder portrait */
+.founder-pic{position:relative;margin:0;width:132px;height:132px;flex:none}
+.founder-pic img{width:100%;height:100%;object-fit:cover;border-radius:50%;background:var(--ink-800);box-shadow:var(--e2);border:1px solid var(--line-2)}
+.founder-mark{position:absolute;right:-6px;bottom:-6px;width:42px;height:42px;padding:8px;border-radius:12px;background:var(--ink-900);box-shadow:var(--e2);overflow:visible}
+@media(max-width:640px){.founder-pic{width:104px;height:104px}.founder-mark{width:34px;height:34px;padding:6px}}
