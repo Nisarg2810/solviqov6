@@ -6,6 +6,16 @@
   var EJ = { key: 'QX_zYoZlN7ibZXYNv', service: 'nisargmehta2810', template: 'template_wa24pe8' };
 
   var doc = document, tool = doc.body.getAttribute('data-tool');
+  var KEY = (function () {                                  // ?key=... saves the publish key once, then leaves the URL clean
+    try {
+      var m = location.search.match(/[?&]key=([^&]+)/);
+      if (m) {
+        localStorage.setItem('sv-pub', decodeURIComponent(m[1]));
+        history.replaceState({}, '', location.pathname + location.search.replace(/([?&])key=[^&]*&?/, '$1').replace(/[?&]$/, ''));
+      }
+      return localStorage.getItem('sv-pub') || '';
+    } catch (e) { return ''; }
+  })();
   if (!tool) return;
 
   function $(s, r) { return (r || doc).querySelector(s); }
@@ -882,13 +892,29 @@
     try { raw = localStorage.getItem('sv-bp:' + slug); } catch (e) {}
     var host = doc.getElementById('appOut');
     if (!host) return;
-    if (!raw) {
-      host.innerHTML = '<div class="tl-empty" style="padding:70px 30px"><p style="margin:0 0 16px">This blueprint is not on this device. ' +
-        'Blueprints are kept in the browser that made them, so open it there or generate a new one.</p>' +
-        '<a class="btn btn-primary" href="tool-blueprint.html">Make a blueprint<span class="shine"></span></a></div>';
+    if (!raw) {                                              // not this browser: try the shared copy
+      host.innerHTML = '<div class="load"><div class="dots"><i></i><i></i><i></i></div><p>Opening this blueprint</p></div>';
+      fetch(WORKER.replace(/\/$/, '') + '/shared?id=' + encodeURIComponent(slug))
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (d) {
+          if (!d || !d.result) {
+            host.innerHTML = '<div class="tl-empty" style="padding:70px 30px"><p style="margin:0 0 16px">This link has expired, or it was never shared. ' +
+              'Shared blueprints stay open for thirty days.</p>' +
+              '<a class="btn btn-primary" href="../tool-blueprint.html">Make a blueprint<span class="shine"></span></a></div>';
+            return;
+          }
+          show(d, slug, true);
+        })
+        .catch(function () {
+          host.innerHTML = '<div class="tl-empty" style="padding:70px 30px"><p style="margin:0">Could not open this blueprint. Check your connection and try again.</p></div>';
+        });
       return;
     }
-    var d = JSON.parse(raw);
+    show(JSON.parse(raw), slug, false);
+  }
+
+  function show(d, slug, shared) {
+    var host = doc.getElementById('appOut');
     BP = d.result || {};
     window.__bpMeta = d;
     doc.title = (BP.app && BP.app.name ? BP.app.name : 'Application') + ' for ' + d.company + ', Solviqo';
@@ -899,13 +925,49 @@
       meta.innerHTML = '<div><span class="kick"><b></b> Application blueprint</span><h1 class="v6-h1" style="margin-top:12px">' +
         esc(d.company) + '</h1><p class="lede" style="margin-top:10px">' +
         esc(d.site || '') + (d.industry ? ' &middot; ' + esc(d.industry) : '') + ' &middot; prepared ' +
-        new Date(d.when || Date.now()).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) + '</p></div>' +
+        new Date(d.when || Date.now()).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) + '</p>' +
+        (d.until ? '<p class="lede" style="margin-top:6px;font-size:14px;color:var(--t3)">Shared link, open until ' +
+          new Date(d.until).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) + '</p>' : '') + '</div>' +
         '<div class="app-acts"><button class="btn btn-primary" type="button" onclick="window.svPrint(this)">Download PDF<span class="shine"></span></button>' +
-        '<a class="btn btn-ghost" href="tool-blueprint.html">New blueprint</a></div>';
+        (KEY && !shared ? '<button class="btn btn-ghost" type="button" id="shareBtn">Create share link</button>' : '') +
+        '<a class="btn btn-ghost" href="../tool-blueprint.html">New blueprint</a></div>';
+      var sb = doc.getElementById('shareBtn');
+      if (sb) sb.onclick = function () { share(sb, d); };
     }
     out = function () { return host; };
     renderBlueprint(d.company);
     fills();
+  }
+
+  function share(btn, d) {
+    var label = btn.textContent;
+    btn.disabled = true; btn.textContent = 'Creating link';
+    fetch(WORKER.replace(/\/$/, '') + '/publish', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-publish-key': KEY },
+      body: JSON.stringify({ company: d.company, site: d.site, industry: d.industry, when: d.when, result: d.result })
+    }).then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); })
+      .then(function (res) {
+        btn.disabled = false; btn.textContent = label;
+        if (!res.ok) { alert(res.j && res.j.error ? res.j.error : 'Could not create the link.'); return; }
+        var link = location.origin + location.pathname.replace(/application\/.*$/, 'application/') + res.j.id;
+        var box = doc.createElement('div');
+        box.className = 'share-box';
+        box.innerHTML = '<b>Shareable link, open for ' + res.j.days + ' days</b>' +
+          '<div class="share-row"><input type="text" readonly value="' + link + '" id="shareUrl">' +
+          '<button class="btn btn-primary" type="button" id="copyBtn">Copy</button></div>' +
+          '<p>Anyone with this link can read the blueprint. It stops working on ' +
+          new Date(res.j.until).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) + '.</p>';
+        btn.parentNode.parentNode.appendChild(box);
+        btn.style.display = 'none';
+        doc.getElementById('copyBtn').onclick = function () {
+          var f = doc.getElementById('shareUrl'); f.select();
+          try { doc.execCommand('copy'); } catch (e) {}
+          if (navigator.clipboard) navigator.clipboard.writeText(link).catch(function () {});
+          this.textContent = 'Copied';
+        };
+      })
+      .catch(function () { btn.disabled = false; btn.textContent = label; alert('Could not reach the server.'); });
   }
 
   /* wiring --------------------------------------------------------------- */
