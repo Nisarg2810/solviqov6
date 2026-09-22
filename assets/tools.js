@@ -46,9 +46,9 @@
   function grab(title, blurb, payload) {
     if (LEAD.sent) { return '<div class="grab"><div class="done">' + TICK + '<div>The full report is open below, and a copy is on its way to us. We will send it over and follow up only if you ask.</div></div></div>'; }
     return '<div class="grab" id="grab"><h4>' + esc(title) + '</h4><p>' + esc(blurb) + '</p>' +
-      '<div class="q2"><div class="q"><input type="text" id="ldName" placeholder="Your name" autocomplete="name"></div>' +
-      '<div class="q"><input type="text" id="ldCo" placeholder="Company" autocomplete="organization"></div></div>' +
-      '<div class="q"><input type="email" id="ldMail" placeholder="Work email" autocomplete="email"></div>' +
+      '<div class="q2"><div class="tl-q"><input type="text" id="ldName" placeholder="Your name" autocomplete="name"></div>' +
+      '<div class="tl-q"><input type="text" id="ldCo" placeholder="Company" autocomplete="organization"></div></div>' +
+      '<div class="tl-q"><input type="email" id="ldMail" placeholder="Work email" autocomplete="email"></div>' +
       '<button class="btn btn-primary" id="ldBtn" type="button" style="width:100%">Unlock the full report<span class="shine"></span></button>' +
       '<p class="tl-note" style="margin-top:12px">No list, no drip sequence. One email with your report, and nothing else unless you reply.</p></div>';
   }
@@ -136,11 +136,11 @@
       '<p>That is ' + hrs(annualHours) + ' of people time, plus the rework, the mistakes and the copying between tools. ' +
       'The biggest single leak is <b style="color:var(--t1)">' + esc(top[0].toLowerCase()) + '</b> at ' + money(top[1]) + ' a year.</p></div>' +
       '<div class="res-body">' +
-      '<div class="kv"><span>Risk of this process breaking</span><b class="' + (score >= 66 ? 'up' : score < 36 ? 'good' : '') + '">' + band[0] + ', ' + score + ' of 100</b></div>' +
+      '<div class="tl-kv"><span>Risk of this process breaking</span><b class="' + (score >= 66 ? 'up' : score < 36 ? 'good' : '') + '">' + band[0] + ', ' + score + ' of 100</b></div>' +
       '<div class="gauge"><i class="' + band[1] + '" data-w="' + score + '"></i></div>' +
       '<p style="color:var(--t2);font-size:13.5px;line-height:1.6;margin:12px 0 0">' + band[2] + '</p>' +
 
-      '<div class="blk" data-locked hidden><h4>Where the money goes</h4><div class="bars">' +
+      '<div class="blk" data-locked hidden><h4>Where the money goes</h4><div class="tl-bars">' +
       leaks.map(function (l) {
         return '<div class="bar-row"><div class="rt"><span>' + esc(l[0]) + '</span><b>' + money(l[1]) + '</b></div>' +
           '<div class="bar-t"><i data-w="' + Math.round(l[1] / total * 100) + '"></i></div>' +
@@ -148,13 +148,13 @@
       }).join('') + '</div></div>' +
 
       '<div class="blk" data-locked hidden><h4>The rest of the picture</h4>' +
-      '<div class="kv"><span>People time in the process</span><b>' + hrs(annualHours) + ' a year</b></div>' +
-      '<div class="kv"><span>Of that, work done twice</span><b class="up">' + hrs(reworkHours) + '</b></div>' +
-      (waitDays ? '<div class="kv"><span>Waiting time across all requests</span><b class="up">' + Math.round(waitDays).toLocaleString('en-IN') + ' days a year</b></div>' : '') +
-      '<div class="kv"><span>Cost per request handled</span><b>' + (vol ? money(total / (vol * 12)) : 'Add a volume') + '</b></div>' +
-      '<div class="kv"><span>Realistic recovery with one system</span><b class="good">' + money(saving) + ' a year</b></div></div>' +
+      '<div class="tl-kv"><span>People time in the process</span><b>' + hrs(annualHours) + ' a year</b></div>' +
+      '<div class="tl-kv"><span>Of that, work done twice</span><b class="up">' + hrs(reworkHours) + '</b></div>' +
+      (waitDays ? '<div class="tl-kv"><span>Waiting time across all requests</span><b class="up">' + Math.round(waitDays).toLocaleString('en-IN') + ' days a year</b></div>' : '') +
+      '<div class="tl-kv"><span>Cost per request handled</span><b>' + (vol ? money(total / (vol * 12)) : 'Add a volume') + '</b></div>' +
+      '<div class="tl-kv"><span>Realistic recovery with one system</span><b class="good">' + money(saving) + ' a year</b></div></div>' +
 
-      '<div class="blk" data-locked hidden><h4>What we would fix first</h4><ul class="ticks">' +
+      '<div class="blk" data-locked hidden><h4>What we would fix first</h4><ul class="tl-ticks">' +
       '<li>Put the ' + (vol ? Math.round(vol) + ' requests a month' : 'requests') + ' on one form so the data arrives complete, which is what removes most of the rework.</li>' +
       '<li>Give every request a status and an owner, so the ' + (delay ? Math.round(delay) + ' day wait' : 'wait') + ' becomes visible instead of being chased.</li>' +
       (tools > 2 ? '<li>Connect the ' + Math.round(tools) + ' tools you listed so the same numbers are not typed more than once.</li>' : '') +
@@ -209,21 +209,21 @@
       '<svg class="chart" viewBox="0 0 ' + w + ' ' + h + '" preserveAspectRatio="none">' +
       '<line class="grid-l" x1="' + pad + '" y1="' + (h - 26) + '" x2="' + (w - 10) + '" y2="' + (h - 26) + '"/>' +
       '<line class="grid-l" x1="' + pad + '" y1="20" x2="' + (w - 10) + '" y2="20"/>' +
-      (cross ? '<line class="x" x1="' + cx.toFixed(1) + '" y1="14" x2="' + cx.toFixed(1) + '" y2="' + (h - 26) + '"/>' : '') +
-      '<polyline class="ln buy" points="' + pts(buy) + '"/><polyline class="ln build" points="' + pts(own) + '"/>' +
+      (cross ? '<line class="tl-x" x1="' + cx.toFixed(1) + '" y1="14" x2="' + cx.toFixed(1) + '" y2="' + (h - 26) + '"/>' : '') +
+      '<polyline class="tl-ln buy" points="' + pts(buy) + '"/><polyline class="tl-ln build" points="' + pts(own) + '"/>' +
       '<text x="' + pad + '" y="' + (h - 10) + '">Month 1</text>' +
       '<text x="' + (w - 60) + '" y="' + (h - 10) + '">Month ' + months + '</text>' +
       '<text x="' + pad + '" y="14">' + money(max) + '</text></svg>' +
       '<div class="legend"><span><i style="background:var(--steel-400)"></i>Keep subscribing</span><span><i style="background:var(--amber-500)"></i>Build it once</span></div>' +
 
       '<div class="blk" data-locked hidden><h4>Over ' + years + ' years</h4>' +
-      '<div class="kv"><span>Licences and workarounds</span><b class="up">' + money(endBuy) + '</b></div>' +
-      '<div class="kv"><span>Build once, then maintain</span><b class="good">' + money(endOwn) + '</b></div>' +
-      '<div class="kv"><span>Difference</span><b class="' + (diff > 0 ? 'good' : 'up') + '">' + money(Math.abs(diff)) + (diff > 0 ? ' saved' : ' more') + '</b></div>' +
-      '<div class="kv"><span>Licence cost in year ' + years + ' alone</span><b>' + money(seats * price * 12 * Math.pow(1 + rise / 100, years - 1)) + '</b></div>' +
-      '<div class="kv"><span>Workaround labour a year</span><b class="up">' + money(extra * 52 * rate) + '</b></div></div>' +
+      '<div class="tl-kv"><span>Licences and workarounds</span><b class="up">' + money(endBuy) + '</b></div>' +
+      '<div class="tl-kv"><span>Build once, then maintain</span><b class="good">' + money(endOwn) + '</b></div>' +
+      '<div class="tl-kv"><span>Difference</span><b class="' + (diff > 0 ? 'good' : 'up') + '">' + money(Math.abs(diff)) + (diff > 0 ? ' saved' : ' more') + '</b></div>' +
+      '<div class="tl-kv"><span>Licence cost in year ' + years + ' alone</span><b>' + money(seats * price * 12 * Math.pow(1 + rise / 100, years - 1)) + '</b></div>' +
+      '<div class="tl-kv"><span>Workaround labour a year</span><b class="up">' + money(extra * 52 * rate) + '</b></div></div>' +
 
-      '<div class="blk" data-locked hidden><h4>What the numbers assume</h4><ul class="ticks q">' +
+      '<div class="blk" data-locked hidden><h4>What the numbers assume</h4><ul class="tl-ticks tl-q">' +
       '<li>Licences rise ' + rise + '% a year, which is what most tools do at renewal.</li>' +
       '<li>The ' + extra + ' hours a week of workarounds stay with the subscription, and drop to about 15% of that once the process lives in one place.</li>' +
       '<li>Maintenance on a custom build is ' + maint + '% of the build a year, which covers hosting, small changes and support.</li>' +
@@ -293,10 +293,10 @@
           return '<div class="mini"><b>' + esc(x.tool) + '</b><p>' + esc(x.why) + '</p></div>';
         }) + '</div>' +
 
-        '<div class="blk" data-locked hidden><h4>Ships in version one</h4><ul class="ticks">' +
+        '<div class="blk" data-locked hidden><h4>Ships in version one</h4><ul class="tl-ticks">' +
         list(r.phase_one, function (x) { return '<li>' + esc(x) + '</li>'; }) + '</ul></div>' +
 
-        '<div class="blk" data-locked hidden><h4>Can wait</h4><ul class="ticks q">' +
+        '<div class="blk" data-locked hidden><h4>Can wait</h4><ul class="tl-ticks tl-q">' +
         list(r.later, function (x) { return '<li>' + esc(x) + '</li>'; }) + '</ul></div>' +
 
         '<div class="blk" data-locked hidden><h4>What could go wrong</h4>' + list(r.risks, function (x) {
@@ -307,7 +307,7 @@
           return '<div class="wk"><b>' + esc(x.week) + '</b><p>' + esc(x.does) + '</p></div>';
         }) + '</div>' +
 
-        '<div class="blk" data-locked hidden><h4>Answer these before anyone builds</h4><ul class="ticks q">' +
+        '<div class="blk" data-locked hidden><h4>Answer these before anyone builds</h4><ul class="tl-ticks tl-q">' +
         list(r.questions, function (x) { return '<li>' + esc(x) + '</li>'; }) + '</ul></div>' +
 
         grab('Open the full specification', 'Screens, data model, integrations, phase one scope, risks, the four week plan and the questions to settle first. Yours to keep, whoever builds it.', {}) +
@@ -337,17 +337,17 @@
         '<div class="big">' + Math.round(saved) + ' hrs</div>' +
         '<p>' + esc(r.summary || '') + '</p></div>' +
         '<div class="res-body">' +
-        '<div class="kv"><span>Tasks worth automating now</span><b>' + quick + ' of ' + tasks.length + '</b></div>' +
-        '<div class="kv"><span>Current load across the list</span><b>' + (r.hours_week ? Math.round(r.hours_week) + ' hrs a week' : 'Not estimated') + '</b></div>' +
+        '<div class="tl-kv"><span>Tasks worth automating now</span><b>' + quick + ' of ' + tasks.length + '</b></div>' +
+        '<div class="tl-kv"><span>Current load across the list</span><b>' + (r.hours_week ? Math.round(r.hours_week) + ' hrs a week' : 'Not estimated') + '</b></div>' +
         '<div class="blk"><h4>Start here</h4><p style="color:var(--t2);font-size:14.5px;line-height:1.65;margin:0">' + esc(r.start_with || '') + '</p></div>' +
 
         '<div class="blk" data-locked hidden><h4>Every task, scored</h4>' +
         tasks.map(function (t) {
           var cls = t.verdict === 'Automate now' ? 'ok' : t.verdict === 'Keep human' ? '' : 'warn';
-          return '<div class="task"><div class="th"><b>' + esc(t.task) + '</b><span class="tag ' + cls + '">' + esc(t.verdict) + '</span></div>' +
-            '<div class="meta"><span class="tag">' + esc(t.effort) + ' effort</span>' +
-            '<span class="tag acc">' + (+t.hours_saved_week || 0) + ' hrs a week</span>' +
-            '<span class="tag">Score ' + Math.round(+t.score || 0) + '</span></div>' +
+          return '<div class="tl-task"><div class="tl-th"><b>' + esc(t.task) + '</b><span class="tl-tag' + cls + '">' + esc(t.verdict) + '</span></div>' +
+            '<div class="tl-meta"><span class="tl-tag">' + esc(t.effort) + ' effort</span>' +
+            '<span class="tl-tag acc">' + (+t.hours_saved_week || 0) + ' hrs a week</span>' +
+            '<span class="tl-tag">Score ' + Math.round(+t.score || 0) + '</span></div>' +
             '<div class="bar-t"><i data-w="' + Math.max(3, Math.min(100, Math.round(+t.score || 0))) + '"></i></div>' +
             '<p>' + esc(t.how) + '</p><p class="wo">Watch out: ' + esc(t.watch_out) + '</p></div>';
         }).join('') + '</div>' +
@@ -387,7 +387,7 @@
     var s = sbState, cfg = SB[s.kind];
     var counts = cfg.flow.map(function (f) { return s.rows.filter(function (r) { return r.step === cfg.flow.indexOf(f); }).length; });
     doc.getElementById('sbApp').innerHTML =
-      '<div class="sb"><div class="sb-bar"><i></i><i></i><i></i><span>' + esc(s.team.toLowerCase().replace(/\s+/g, '-')) + '.app</span></div>' +
+      '<div class="tl-sb"><div class="sb-bar"><i></i><i></i><i></i><span>' + esc(s.team.toLowerCase().replace(/\s+/g, '-')) + '.app</span></div>' +
       '<div class="sb-body">' +
       '<div class="sb-top"><h4>' + esc(s.team) + ' &middot; ' + esc(s.label) + '</h4>' +
       '<button class="btn btn-primary" id="sbNew" type="button">New ' + esc(cfg.unit.toLowerCase()) + '<span class="shine"></span></button></div>' +
@@ -397,8 +397,8 @@
       '<div class="sb-rows">' + (s.rows.length ? s.rows.map(function (r, i) {
         var last = r.step >= cfg.flow.length - 1;
         return '<div class="sb-row"><div><b>' + esc(r.name) + '</b><small>' + esc(cfg.who) + ': ' + esc(r.who) + ' &middot; ' + esc(r.when) + '</small></div>' +
-          '<span class="tag ' + (last ? 'ok' : r.step === 0 ? '' : 'warn') + '">' + esc(cfg.flow[r.step]) + '</span>' +
-          (last ? '<span class="tag ok">Closed</span>' : '<button class="sb-act" data-i="' + i + '">Move to ' + esc(cfg.flow[r.step + 1]) + '</button>') + '</div>';
+          '<span class="tl-tag' + (last ? 'ok' : r.step === 0 ? '' : 'warn') + '">' + esc(cfg.flow[r.step]) + '</span>' +
+          (last ? '<span class="tl-tag ok">Closed</span>' : '<button class="sb-act" data-i="' + i + '">Move to ' + esc(cfg.flow[r.step + 1]) + '</button>') + '</div>';
       }).join('') : '<div class="sb-empty">Nothing here yet. Add the first one.</div>') + '</div>' +
       '<p class="tl-note">Everything you do here is real, running in your browser. Your version would run on your data, with your people signed in, and would not forget when you close the tab.</p>' +
       '</div></div>';
