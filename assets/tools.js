@@ -344,7 +344,7 @@
         '<div class="blk" data-locked hidden><h4>Every task, scored</h4>' +
         tasks.map(function (t) {
           var cls = t.verdict === 'Automate now' ? 'ok' : t.verdict === 'Keep human' ? '' : 'warn';
-          return '<div class="tl-task"><div class="tl-th"><b>' + esc(t.task) + '</b><span class="tl-tag' + cls + '">' + esc(t.verdict) + '</span></div>' +
+          return '<div class="tl-task"><div class="tl-th"><b>' + esc(t.task) + '</b><span class="tl-tag ' + cls + '">' + esc(t.verdict) + '</span></div>' +
             '<div class="tl-meta"><span class="tl-tag">' + esc(t.effort) + ' effort</span>' +
             '<span class="tl-tag acc">' + (+t.hours_saved_week || 0) + ' hrs a week</span>' +
             '<span class="tl-tag">Score ' + Math.round(+t.score || 0) + '</span></div>' +
@@ -397,7 +397,7 @@
       '<div class="sb-rows">' + (s.rows.length ? s.rows.map(function (r, i) {
         var last = r.step >= cfg.flow.length - 1;
         return '<div class="sb-row"><div><b>' + esc(r.name) + '</b><small>' + esc(cfg.who) + ': ' + esc(r.who) + ' &middot; ' + esc(r.when) + '</small></div>' +
-          '<span class="tl-tag' + (last ? 'ok' : r.step === 0 ? '' : 'warn') + '">' + esc(cfg.flow[r.step]) + '</span>' +
+          '<span class="tl-tag ' + (last ? 'ok' : r.step === 0 ? '' : 'warn') + '">' + esc(cfg.flow[r.step]) + '</span>' +
           (last ? '<span class="tl-tag ok">Closed</span>' : '<button class="sb-act" data-i="' + i + '">Move to ' + esc(cfg.flow[r.step + 1]) + '</button>') + '</div>';
       }).join('') : '<div class="sb-empty">Nothing here yet. Add the first one.</div>') + '</div>' +
       '<p class="tl-note">Everything you do here is real, running in your browser. Your version would run on your data, with your people signed in, and would not forget when you close the tab.</p>' +
