@@ -242,10 +242,19 @@
   }
 
   /* 3 and 4 ------------------------------------------------------- Claude side */
-  function ask(path, input, render, payload) {
-    fetch(WORKER.replace(/\/$/, '') + '/' + path, {
-      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ input: input })
+  function call(path, body, tries) {
+    return fetch(WORKER.replace(/\/$/, '') + '/' + path, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body)
     }).then(function (r) {
+      if (r.status >= 500 && (tries || 0) < 1) {               // one quiet retry, these blips happen
+        return new Promise(function (go) { setTimeout(go, 1200); }).then(function () { return call(path, body, (tries || 0) + 1); });
+      }
+      return r;
+    });
+  }
+
+  function ask(path, input, render, payload) {
+    call(path, { input: input }).then(function (r) {
       return r.json().then(function (d) { return { ok: r.ok, d: d }; });
     }).then(function (res) {
       if (!res.ok || !res.d.result) { fail(res.d && res.d.error ? res.d.error : 'Something went wrong. Try again in a moment.'); return; }
@@ -507,10 +516,7 @@
     loading('Reading ' + (site || co) + ' and designing the application',
       'We read your site, study the usual problems in ' + ind.toLowerCase() + ', then draw the screens. About thirty seconds.');
 
-    fetch(WORKER.replace(/\/$/, '') + '/blueprint', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ input: input, url: site })
-    }).then(function (r) { return r.json().then(function (d) { return { ok: r.ok, d: d }; }); })
+    call('blueprint', { input: input, url: site }).then(function (r) { return r.json().then(function (d) { return { ok: r.ok, d: d }; }); })
       .then(function (res) {
         if (!res.ok || !res.d.result) { fail(res.d && res.d.error ? res.d.error : 'Something went wrong. Try again in a moment.'); return; }
         BP = res.d.result;
