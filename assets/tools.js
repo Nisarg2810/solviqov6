@@ -41,56 +41,28 @@
 
   var TICK = '<svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 
-  /* lead capture --------------------------------------------------------- */
-  var LEAD = { sent: false };
-  function grab(title, blurb, payload) {
-    if (LEAD.sent) { return '<div class="grab"><div class="done">' + TICK + '<div>The full report is open below, and a copy is on its way to us. We will send it over and follow up only if you ask.</div></div></div>'; }
-    return '<div class="grab" id="grab"><h4>' + esc(title) + '</h4><p>' + esc(blurb) + '</p>' +
-      '<div class="q2"><div class="tl-q"><input type="text" id="ldName" placeholder="Your name" autocomplete="name"></div>' +
-      '<div class="tl-q"><input type="text" id="ldCo" placeholder="Company" autocomplete="organization"></div></div>' +
-      '<div class="tl-q"><input type="email" id="ldMail" placeholder="Work email" autocomplete="email"></div>' +
-      '<button class="btn btn-primary" id="ldBtn" type="button" style="width:100%">Unlock the full report<span class="shine"></span></button>' +
-      '<p class="tl-note" style="margin-top:12px">No list, no drip sequence. One email with your report, and nothing else unless you reply.</p></div>';
-  }
-
-  function wireGrab(payload, onUnlock) {
-    var btn = doc.getElementById('ldBtn');
-    if (!btn) { onUnlock(); return; }
-    btn.onclick = function () {
-      var name = val('ldName').trim(), mail = val('ldMail').trim(), co = val('ldCo').trim();
-      if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(mail)) {
-        doc.getElementById('ldMail').style.borderColor = 'var(--bad-500)';
-        doc.getElementById('ldMail').focus();
-        return;
-      }
-      btn.disabled = true; btn.textContent = 'Opening your report';
-      var msg = 'New tool lead: ' + payload.tool + '\n\n' + name + (co ? ' at ' + co : '') + '\n' + mail + '\n\n' + payload.summary;
-      fetch('https://api.emailjs.com/api/v1.0/email/send', {
-        method: 'POST', keepalive: true, headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          service_id: EJ.service, template_id: EJ.template, user_id: EJ.key,
-          template_params: {
-            page_name: payload.tool, link: location.href, time: new Date().toLocaleString(),
-            location: co || 'Not given', button_label: name + ' <' + mail + '>',
-            event: 'Tool lead', message: msg
-          }
-        })
-      }).catch(function () {});
-      LEAD.sent = true;
-      onUnlock();
-    };
-  }
-
-  function unlock() {
-    $$('[data-locked]', out()).forEach(function (e) { e.removeAttribute('hidden'); });
-    var g = doc.getElementById('grab');
-    if (g) g.outerHTML = '<div class="grab"><div class="done">' + TICK +
-      '<div><b style="color:var(--t1)">Report unlocked.</b> Everything below is yours. Use the print button for a PDF, and we will email a copy as well.</div></div>' +
-      '<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:15px">' +
-      '<button class="btn btn-ghost" type="button" onclick="window.print()">Save as PDF</button>' +
+  /* actions shown under every result (no email gate, this is used internally) */
+  function grab() {
+    return '<div class="grab"><div style="display:flex;gap:10px;flex-wrap:wrap">' +
+      '<button class="btn btn-ghost" type="button" onclick="window.svPrint()">Download PDF</button>' +
       '<a class="btn btn-primary" href="contact.html">Talk it through in 20 minutes<span class="shine"></span></a></div></div>';
+  }
+  function wireGrab(payload, onUnlock) { if (onUnlock) onUnlock(); }
+  function unlock() {
+    $$('[data-locked]', out() || doc).forEach(function (e) { e.removeAttribute('hidden'); });
     fills();
   }
+
+  /* print: flip to the light theme so a PDF is readable, then flip back */
+  window.svPrint = function () {
+    var root = doc.documentElement, was = root.getAttribute('data-theme');
+    root.setAttribute('data-theme', 'light');
+    root.classList.add('printing');
+    setTimeout(function () {
+      window.print();
+      setTimeout(function () { root.setAttribute('data-theme', was || 'dark'); root.classList.remove('printing'); }, 600);
+    }, 260);
+  };
 
   /* 1 ---------------------------------------------------- spreadsheet leak */
   function leak() {
@@ -140,21 +112,21 @@
       '<div class="gauge"><i class="' + band[1] + '" data-w="' + score + '"></i></div>' +
       '<p style="color:var(--t2);font-size:13.5px;line-height:1.6;margin:12px 0 0">' + band[2] + '</p>' +
 
-      '<div class="blk" data-locked hidden><h4>Where the money goes</h4><div class="tl-bars">' +
+      '<div class="blk"><h4>Where the money goes</h4><div class="tl-bars">' +
       leaks.map(function (l) {
         return '<div class="bar-row"><div class="rt"><span>' + esc(l[0]) + '</span><b>' + money(l[1]) + '</b></div>' +
           '<div class="bar-t"><i data-w="' + Math.round(l[1] / total * 100) + '"></i></div>' +
           '<div style="color:var(--t3);font-size:12px;margin-top:5px">' + esc(l[2]) + '</div></div>';
       }).join('') + '</div></div>' +
 
-      '<div class="blk" data-locked hidden><h4>The rest of the picture</h4>' +
+      '<div class="blk"><h4>The rest of the picture</h4>' +
       '<div class="tl-kv"><span>People time in the process</span><b>' + hrs(annualHours) + ' a year</b></div>' +
       '<div class="tl-kv"><span>Of that, work done twice</span><b class="up">' + hrs(reworkHours) + '</b></div>' +
       (waitDays ? '<div class="tl-kv"><span>Waiting time across all requests</span><b class="up">' + Math.round(waitDays).toLocaleString('en-IN') + ' days a year</b></div>' : '') +
       '<div class="tl-kv"><span>Cost per request handled</span><b>' + (vol ? money(total / (vol * 12)) : 'Add a volume') + '</b></div>' +
       '<div class="tl-kv"><span>Realistic recovery with one system</span><b class="good">' + money(saving) + ' a year</b></div></div>' +
 
-      '<div class="blk" data-locked hidden><h4>What we would fix first</h4><ul class="tl-ticks">' +
+      '<div class="blk"><h4>What we would fix first</h4><ul class="tl-ticks">' +
       '<li>Put the ' + (vol ? Math.round(vol) + ' requests a month' : 'requests') + ' on one form so the data arrives complete, which is what removes most of the rework.</li>' +
       '<li>Give every request a status and an owner, so the ' + (delay ? Math.round(delay) + ' day wait' : 'wait') + ' becomes visible instead of being chased.</li>' +
       (tools > 2 ? '<li>Connect the ' + Math.round(tools) + ' tools you listed so the same numbers are not typed more than once.</li>' : '') +
@@ -216,14 +188,14 @@
       '<text x="' + pad + '" y="14">' + money(max) + '</text></svg>' +
       '<div class="legend"><span><i style="background:var(--steel-400)"></i>Keep subscribing</span><span><i style="background:var(--amber-500)"></i>Build it once</span></div>' +
 
-      '<div class="blk" data-locked hidden><h4>Over ' + years + ' years</h4>' +
+      '<div class="blk"><h4>Over ' + years + ' years</h4>' +
       '<div class="tl-kv"><span>Licences and workarounds</span><b class="up">' + money(endBuy) + '</b></div>' +
       '<div class="tl-kv"><span>Build once, then maintain</span><b class="good">' + money(endOwn) + '</b></div>' +
       '<div class="tl-kv"><span>Difference</span><b class="' + (diff > 0 ? 'good' : 'up') + '">' + money(Math.abs(diff)) + (diff > 0 ? ' saved' : ' more') + '</b></div>' +
       '<div class="tl-kv"><span>Licence cost in year ' + years + ' alone</span><b>' + money(seats * price * 12 * Math.pow(1 + rise / 100, years - 1)) + '</b></div>' +
       '<div class="tl-kv"><span>Workaround labour a year</span><b class="up">' + money(extra * 52 * rate) + '</b></div></div>' +
 
-      '<div class="blk" data-locked hidden><h4>What the numbers assume</h4><ul class="tl-ticks tl-q">' +
+      '<div class="blk"><h4>What the numbers assume</h4><ul class="tl-ticks tl-q">' +
       '<li>Licences rise ' + rise + '% a year, which is what most tools do at renewal.</li>' +
       '<li>The ' + extra + ' hours a week of workarounds stay with the subscription, and drop to about 15% of that once the process lives in one place.</li>' +
       '<li>Maintenance on a custom build is ' + maint + '% of the build a year, which covers hosting, small changes and support.</li>' +
@@ -288,35 +260,35 @@
           return '<div class="mini"><b>' + esc(x.role) + '</b><p>' + esc(x.can) + '</p></div>';
         }) + '</div>' +
 
-        '<div class="blk" data-locked hidden><h4>Screens to build</h4>' + list(r.screens, function (x) {
+        '<div class="blk"><h4>Screens to build</h4>' + list(r.screens, function (x) {
           return '<div class="mini"><b>' + esc(x.name) + '</b><p>' + esc(x.purpose) + '</p>' +
             '<div class="fields">' + (x.key_fields || []).map(function (f) { return '<span>' + esc(f) + '</span>'; }).join('') + '</div></div>';
         }) + '</div>' +
 
-        '<div class="blk" data-locked hidden><h4>What the database holds</h4>' + list(r.data, function (x) {
+        '<div class="blk"><h4>What the database holds</h4>' + list(r.data, function (x) {
           return '<div class="mini"><b>' + esc(x.entity) + '</b><p>' + esc(x.note || '') + '</p>' +
             '<div class="fields">' + (x.fields || []).map(function (f) { return '<span>' + esc(f) + '</span>'; }).join('') + '</div></div>';
         }) + '</div>' +
 
-        '<div class="blk" data-locked hidden><h4>Connects to</h4>' + list(r.integrations, function (x) {
+        '<div class="blk"><h4>Connects to</h4>' + list(r.integrations, function (x) {
           return '<div class="mini"><b>' + esc(x.tool) + '</b><p>' + esc(x.why) + '</p></div>';
         }) + '</div>' +
 
-        '<div class="blk" data-locked hidden><h4>Ships in version one</h4><ul class="tl-ticks">' +
+        '<div class="blk"><h4>Ships in version one</h4><ul class="tl-ticks">' +
         list(r.phase_one, function (x) { return '<li>' + esc(x) + '</li>'; }) + '</ul></div>' +
 
-        '<div class="blk" data-locked hidden><h4>Can wait</h4><ul class="tl-ticks tl-q">' +
+        '<div class="blk"><h4>Can wait</h4><ul class="tl-ticks tl-q">' +
         list(r.later, function (x) { return '<li>' + esc(x) + '</li>'; }) + '</ul></div>' +
 
-        '<div class="blk" data-locked hidden><h4>What could go wrong</h4>' + list(r.risks, function (x) {
+        '<div class="blk"><h4>What could go wrong</h4>' + list(r.risks, function (x) {
           return '<div class="mini"><b>' + esc(x.risk) + '</b><p>' + esc(x.handle) + '</p></div>';
         }) + '</div>' +
 
-        '<div class="blk" data-locked hidden><h4>Four week plan</h4>' + list(r.plan, function (x) {
+        '<div class="blk"><h4>Four week plan</h4>' + list(r.plan, function (x) {
           return '<div class="wk"><b>' + esc(x.week) + '</b><p>' + esc(x.does) + '</p></div>';
         }) + '</div>' +
 
-        '<div class="blk" data-locked hidden><h4>Answer these before anyone builds</h4><ul class="tl-ticks tl-q">' +
+        '<div class="blk"><h4>Answer these before anyone builds</h4><ul class="tl-ticks tl-q">' +
         list(r.questions, function (x) { return '<li>' + esc(x) + '</li>'; }) + '</ul></div>' +
 
         grab('Open the full specification', 'Screens, data model, integrations, phase one scope, risks, the four week plan and the questions to settle first. Yours to keep, whoever builds it.', {}) +
@@ -350,7 +322,7 @@
         '<div class="tl-kv"><span>Current load across the list</span><b>' + (r.hours_week ? Math.round(r.hours_week) + ' hrs a week' : 'Not estimated') + '</b></div>' +
         '<div class="blk"><h4>Start here</h4><p style="color:var(--t2);font-size:14.5px;line-height:1.65;margin:0">' + esc(r.start_with || '') + '</p></div>' +
 
-        '<div class="blk" data-locked hidden><h4>Every task, scored</h4>' +
+        '<div class="blk"><h4>Every task, scored</h4>' +
         tasks.map(function (t) {
           var cls = t.verdict === 'Automate now' ? 'ok' : t.verdict === 'Keep human' ? '' : 'warn';
           return '<div class="tl-task"><div class="tl-th"><b>' + esc(t.task) + '</b><span class="tl-tag ' + cls + '">' + esc(t.verdict) + '</span></div>' +
@@ -520,7 +492,14 @@
       .then(function (res) {
         if (!res.ok || !res.d.result) { fail(res.d && res.d.error ? res.d.error : 'Something went wrong. Try again in a moment.'); return; }
         BP = res.d.result;
-        renderBlueprint(co);
+        var slug = co.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 48) || 'company';
+        try {
+          localStorage.setItem('sv-bp:' + slug, JSON.stringify({ company: co, site: site, industry: ind, when: Date.now(), result: BP }));
+          localStorage.setItem('sv-bp-last', slug);
+        } catch (e) {}
+        var base = location.pathname.replace(/[^/]*$/, '');
+        location.href = base + 'application/?c=' + encodeURIComponent(slug);
+        return;
         wireGrab({
           tool: 'Application Blueprint',
           summary: 'Company: ' + co + ' (' + site + ', ' + ind + ')\nApp: ' + (BP.app || {}).name + '\n' +
@@ -535,7 +514,7 @@
 
   function renderBlueprint(co) {
     var A = BP.app || {}, R = BP.read || {}, mods = BP.modules || [], sec = function (kick, title, inner, locked) {
-      return '<div class="bp-sec"' + (locked ? ' data-locked hidden' : '') + '><h4>' + esc(kick) + '</h4><h5>' + esc(title) + '</h5>' + inner + '</div>';
+      return '<div class="bp-sec"' + '' + '><h4>' + esc(kick) + '</h4><h5>' + esc(title) + '</h5>' + inner + '</div>';
     };
 
     var signals = (R.signals || []).map(function (s) { return '<span>' + esc(s) + '</span>'; }).join('');
@@ -583,7 +562,7 @@
 
       sec('The application', 'What you would be using, screen by screen.',
         mods.slice(0, 1).map(modBlock).join('') +
-        '<div data-locked hidden>' + mods.slice(1).map(function (m, i) { return modBlock(m, i + 1); }).join('') + '</div>') +
+        '<div>' + mods.slice(1).map(function (m, i) { return modBlock(m, i + 1); }).join('') + '</div>') +
 
       sec('Who signs in', 'Every role opens on the thing they need.', '<div class="bp-grid">' + roles + '</div>', true) +
 
@@ -603,8 +582,46 @@
       '</div>';
   }
 
+  /* the saved blueprint, on its own page ---------------------------------- */
+  function application() {
+    var slug = (location.search.match(/[?&]c=([^&]+)/) || [])[1];
+    slug = slug ? decodeURIComponent(slug) : '';
+    if (!slug) {
+      var m = location.pathname.match(/application\/([^/?#]+)/);
+      slug = m ? decodeURIComponent(m[1]) : (localStorage.getItem('sv-bp-last') || '');
+    }
+    var raw = null;
+    try { raw = localStorage.getItem('sv-bp:' + slug); } catch (e) {}
+    var host = doc.getElementById('appOut');
+    if (!host) return;
+    if (!raw) {
+      host.innerHTML = '<div class="tl-empty" style="padding:70px 30px"><p style="margin:0 0 16px">This blueprint is not on this device. ' +
+        'Blueprints are kept in the browser that made them, so open it there or generate a new one.</p>' +
+        '<a class="btn btn-primary" href="tool-blueprint.html">Make a blueprint<span class="shine"></span></a></div>';
+      return;
+    }
+    var d = JSON.parse(raw);
+    BP = d.result || {};
+    doc.title = (BP.app && BP.app.name ? BP.app.name : 'Application') + ' for ' + d.company + ', Solviqo';
+    var pretty = location.pathname.replace(/application\/.*$/, 'application/') + slug;
+    try { history.replaceState({}, '', pretty); } catch (e) {}
+    var meta = doc.getElementById('appMeta');
+    if (meta) {
+      meta.innerHTML = '<div><span class="kick"><b></b> Application blueprint</span><h1 class="v6-h1" style="margin-top:12px">' +
+        esc(d.company) + '</h1><p class="lede" style="margin-top:10px">' +
+        esc(d.site || '') + (d.industry ? ' &middot; ' + esc(d.industry) : '') + ' &middot; prepared ' +
+        new Date(d.when || Date.now()).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) + '</p></div>' +
+        '<div class="app-acts"><button class="btn btn-primary" type="button" onclick="window.svPrint()">Download PDF<span class="shine"></span></button>' +
+        '<a class="btn btn-ghost" href="tool-blueprint.html">New blueprint</a></div>';
+    }
+    out = function () { return host; };
+    renderBlueprint(d.company);
+    fills();
+  }
+
   /* wiring --------------------------------------------------------------- */
   var RUN = { leak: leak, bb: buildbuy, spec: spec, auto: automation, sandbox: sandbox, blueprint: blueprint };
+  if (tool === 'application') { application(); return; }
   var btn = doc.getElementById('tlRun');
   if (btn && RUN[tool]) btn.onclick = function () { RUN[tool](); };
 

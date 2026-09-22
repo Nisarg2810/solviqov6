@@ -245,3 +245,23 @@
   .scn-t th,.scn-t td{padding:8px 5px;font-size:11.5px}
   .scn-p{grid-template-columns:70px 1fr;gap:8px}
 }
+
+/* the application page and its PDF */
+.app-head{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;flex-wrap:wrap}
+.app-acts{display:flex;gap:10px;flex-wrap:wrap}
+.app-head .v6-h1{font-size:clamp(30px,4vw,52px);margin:0}
+@media print{
+  .hdr,.site-head,header,footer,.ftr,.crumbs,.app-acts,.sv-cursor,.quick,.grab,#sheet,.nav,.foot,.sec-h .kick{display:none!important}
+  html,body{background:#fff!important}
+  .wrap{width:100%!important;max-width:none!important;padding:0!important}
+  .sec{padding:0!important}
+  .panel,.bp-out,.bp-card,.bp-num,.scn,.mini{break-inside:avoid;page-break-inside:avoid}
+  .bp-sec{break-inside:avoid;page-break-inside:avoid;padding:18px 0}
+  .bp-mod{break-inside:avoid;page-break-inside:avoid}
+  .bp-hero{padding:0 0 18px}
+  .grain,.aurora,.beam,.spot,.glow,.bg-art,.hero-art{display:none!important}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+    box-shadow:none!important;text-shadow:none!important;animation:none!important;transition:none!important}
+  .panel,.bp-card,.bp-num,.scn,.mini,.bp-out{background-image:none!important}
+  .bp-hero{background:none!important}
+}
