@@ -938,41 +938,7 @@
         (d.until ? '<p class="lede" style="margin-top:6px;font-size:14px;color:var(--t3)">Shared link, open until ' +
           new Date(d.until).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) + '</p>' : '') + '</div>' +
         '<div class="app-acts"><button class="btn btn-primary" type="button" onclick="window.svPrint(this)">Download PDF<span class="shine"></span></button>' +
-        '<button class="btn btn-ghost" type="button" id="shareBtn">Copy share link</button>' +
-        '<a class="btn btn-ghost" href="../tool-blueprint.html">New blueprint</a></div>';
-      var sb = doc.getElementById('shareBtn');
-      if (sb) sb.onclick = function () {
-        var base = location.origin + location.pathname.replace(/application\/.*$/, 'application/');
-        var copy = function (id) {
-          var link = base + id;
-          var f = doc.createElement('input');
-          f.value = link; f.style.cssText = 'position:fixed;left:-9999px';
-          doc.body.appendChild(f); f.select();
-          try { doc.execCommand('copy'); } catch (e) {}
-          if (navigator.clipboard) navigator.clipboard.writeText(link).catch(function () {});
-          doc.body.removeChild(f);
-          sb.disabled = false;
-          sb.textContent = 'Link copied';
-          setTimeout(function () { sb.textContent = 'Copy share link'; }, 2600);
-        };
-        if (shared) { copy(slug); return; }
-        sb.disabled = true; sb.textContent = 'Making the link';
-        fetch(WORKER.replace(/\/$/, '') + '/shared?id=' + encodeURIComponent(slug))
-          .then(function (r) { return r.ok; })
-          .then(function (there) {
-            if (there) { copy(slug); return; }
-            return fetch(WORKER.replace(/\/$/, '') + '/publish', {      // never published, do it now
-              method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(d)
-            }).then(function (r) { return r.ok ? r.json() : null; })
-              .then(function (p) {
-                if (!p || !p.id) { sb.disabled = false; sb.textContent = 'Copy share link'; alert('Could not create a shareable link. Try again in a moment.'); return; }
-                try { localStorage.setItem('sv-bp:' + p.id, JSON.stringify(d)); } catch (e) {}
-                try { history.replaceState({}, '', base + p.id); } catch (e) {}
-                copy(p.id);
-              });
-          })
-          .catch(function () { sb.disabled = false; sb.textContent = 'Copy share link'; alert('Could not reach the server.'); });
-      };
+        '<a class="btn btn-ghost" href="https://cal.com/nisarg-mehta/solviqo/" target="_blank" rel="noopener">Book a call</a></div>';
     }
     out = function () { return host; };
     renderBlueprint(d.company);
