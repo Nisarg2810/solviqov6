@@ -493,9 +493,15 @@
   }
 
   /* 3 and 4 ------------------------------------------------------- Claude side */
+  function heads() {
+    var h = { 'Content-Type': 'application/json' };
+    if (KEY) h['x-publish-key'] = KEY;                 // your own browser skips the visitor limits
+    return h;
+  }
+
   function call(path, body, tries) {
     return fetch(WORKER.replace(/\/$/, '') + '/' + path, {
-      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body)
+      method: 'POST', headers: heads(), body: JSON.stringify(body)
     }).then(function (r) {
       if (r.status >= 500 && (tries || 0) < 1) {               // one quiet retry, these blips happen
         return new Promise(function (go) { setTimeout(go, 1200); }).then(function () { return call(path, body, (tries || 0) + 1); });
@@ -784,7 +790,7 @@
         };
         loading('Saving your blueprint', 'One moment, it is getting its own address.');
         fetch(WORKER.replace(/\/$/, '') + '/publish', {
-          method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(d)
+          method: 'POST', headers: heads(), body: JSON.stringify(d)
         }).then(function (r) { return r.ok ? r.json() : null; })
           .then(function (p) { keep(p && p.id ? p.id : slug); })
           .catch(function () { keep(slug); });          // offline or blocked: still works in this browser
