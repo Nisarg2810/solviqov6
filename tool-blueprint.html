@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Spreadsheet Leak Audit, Solviqo</title>
-<meta name="description" content="Answer eight questions about one process and see what it costs you a year in hours, rework and mistakes.">
+<title>Application Blueprint, Solviqo</title>
+<meta name="description" content="Give us your website and your problems, and see the application built for your company: screens, roles, features and a build plan.">
 <meta name="theme-color" content="#05070C">
-<meta property="og:title" content="Spreadsheet Leak Audit, Solviqo">
-<meta property="og:description" content="Answer eight questions about one process and see what it costs you a year in hours, rework and mistakes.">
+<meta property="og:title" content="Application Blueprint, Solviqo">
+<meta property="og:description" content="Give us your website and your problems, and see the application built for your company: screens, roles, features and a build plan.">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://nisarg2810.github.io/solviqov6/tool-spreadsheet-audit.html">
+<meta property="og:url" content="https://nisarg2810.github.io/solviqov6/tool-blueprint.html">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 240'%3E%3Crect width='240' height='240' rx='48' fill='%2305070C'/%3E%3Cg transform='translate(70,168) rotate(-25) scale(0.62)'%3E%3Cpolyline points='-27,-30 28,0 -27,30' fill='none' stroke='%235B6779' stroke-width='18'/%3E%3C/g%3E%3Cg transform='translate(118,128) rotate(-12) scale(0.82)'%3E%3Cpolyline points='-27,-30 28,0 -27,30' fill='none' stroke='%239FAABA' stroke-width='18'/%3E%3C/g%3E%3Cg transform='translate(172,72) rotate(2) scale(1.05)'%3E%3Cpolyline points='-27,-30 28,0 -27,30' fill='none' stroke='%23E2E8F0' stroke-width='18'/%3E%3C/g%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -19,7 +19,7 @@
 <script>(function(){try{var t=localStorage.getItem('solviqo-theme');if(!t)t=matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',t);}catch(e){document.documentElement.setAttribute('data-theme','dark');}})();</script>
 <script>try{if(!sessionStorage.getItem('sv-seen')&&!matchMedia('(prefers-reduced-motion: reduce)').matches)document.documentElement.classList.add('is-loading');}catch(e){}</script>
 </head>
-<body data-tool="leak">
+<body data-tool="blueprint">
 <div class="loader" aria-hidden="true"><div class="ld-in">
   <svg class="ld-mark" viewBox="0 0 240 240"><g fill="none" stroke-width="18" stroke-linecap="square">
     <g transform="translate(70,168) rotate(-25) scale(0.62)"><polyline class="ld-c1" points="-27,-30 28,0 -27,30"/></g>
@@ -87,38 +87,38 @@
 
   <section class="v6-hero">
     <div class="wrap">
-      <nav class="crumbs rev" aria-label="Breadcrumb"><a href="index.html">Home</a> <span>/</span> <a href="tools.html">Free tools</a> <span>/</span> <em>Spreadsheet Leak Audit</em></nav>
-      <div class="rev" style="max-width:820px"><span class="kick"><b>01</b> Free tool</span><h1 class="v6-h1" data-split="1">What is that spreadsheet actually <span class="nw"><span class="squig">costing<svg viewBox="0 0 200 14" preserveAspectRatio="none"><path d="M2 8 Q 12 2 22 8 T 42 8 T 62 8 T 82 8 T 102 8 T 122 8 T 142 8 T 162 8 T 182 8 T 198 8"/></svg></span></span> you?</h1>
-        <p class="lede">Eight questions about one process you run today. You get the annual cost in money and hours, a risk score, and the four places the money leaks out. Takes about ninety seconds, nothing to install.</p></div>
+      <nav class="crumbs rev" aria-label="Breadcrumb"><a href="index.html">Home</a> <span>/</span> <a href="tools.html">Free tools</a> <span>/</span> <em>Application Blueprint</em></nav>
+      <div class="rev" style="max-width:820px"><span class="kick"><b>01</b> Free tool</span><h1 class="v6-h1" data-split="1">See the application built for <span class="nw"><span class="squig">your<svg viewBox="0 0 200 14" preserveAspectRatio="none"><path d="M2 8 Q 12 2 22 8 T 42 8 T 62 8 T 82 8 T 102 8 T 122 8 T 142 8 T 162 8 T 182 8 T 198 8"/></svg></span></span> company, before you spend a rupee.</h1>
+        <p class="lede">Tell us your website and what is slowing you down. We read what your company actually does, look at how software usually goes wrong in your industry, and draw the application: every screen, who signs in, what it changes, and how it gets built. One page, about thirty seconds.</p></div>
     </div>
   </section>
   <section class="sec" style="padding-top:12px">
     <div class="wrap">
-      <div class="tl-wrap">
-        <form class="panel tl-form rev" autocomplete="on">
-          <h3>One process, eight questions</h3>
-          <p class="hint">Pick the process that annoys your team most. Approvals, inspections, onboarding, reporting, anything that lives in sheets and email.</p>
-          <div class="tl-q"><label>Currency</label><select id="curSel"><option value="INR" selected>INR</option><option value="USD">USD</option><option value="AED">AED</option><option value="GBP">GBP</option></select></div><div class="q2"><div class="tl-q"><label>People involved</label><input type="number" id="lkPeople" placeholder="e.g. 4" value="4" min="0" step="any" inputmode="decimal"></div><div class="tl-q"><label>Hours each per week</label><input type="number" id="lkHours" placeholder="e.g. 6" value="6" min="0" step="any" inputmode="decimal"></div></div><div class="q2"><div class="tl-q"><label>Fully loaded cost per hour<span class="sub">Salary plus overhead, not take home</span></label><input type="number" id="lkRate" placeholder="e.g. 900" value="900" min="0" step="any" inputmode="decimal"></div><div class="tl-q"><label>Requests a month</label><input type="number" id="lkVol" placeholder="e.g. 120" value="120" min="0" step="any" inputmode="decimal"></div></div><div class="q2"><div class="tl-q"><label>Work redone, percent<span class="sub">Sent back, wrong data, done twice</span></label><input type="number" id="lkRework" placeholder="e.g. 15" value="15" min="0" step="any" inputmode="decimal"></div><div class="tl-q"><label>Days a request waits</label><input type="number" id="lkDelay" placeholder="e.g. 3" value="3" min="0" step="any" inputmode="decimal"></div></div><div class="q2"><div class="tl-q"><label>Tools and sheets involved</label><input type="number" id="lkTools" placeholder="e.g. 4" value="4" min="0" step="any" inputmode="decimal"></div><div class="tl-q"><label>Mistakes caught a month<span class="sub">The ones someone had to unwind</span></label><input type="number" id="lkErrors" placeholder="e.g. 5" value="5" min="0" step="any" inputmode="decimal"></div></div>
-          <button class="btn btn-primary tl-run" id="tlRun" type="button">Show me the number<span class="shine"></span></button>
-          <p class="tl-note">Nothing is stored until you ask for the report. The maths runs in your browser.</p>
+      <div class="bp-stack">
+        <form class="panel tl-form rev bp-form" autocomplete="on">
+          <h3>Five things about your company</h3>
+          <p class="hint">The website matters most. Everything we draw is built from what your own site says you do.</p>
+          <div class="q2"><div class="tl-q"><label>Company name</label><input type="text" id="bpName" placeholder="Northwind Logistics"></div><div class="tl-q"><label>Website</label><input type="text" id="bpSite" placeholder="northwind.co.in"></div></div><div class="tl-q"><label>Describe your company in one line</label><textarea id="bpWhat" placeholder="We move temperature controlled cargo for pharma companies across six states, with our own fleet and thirty drivers."></textarea></div><div class="tl-q"><label>What do you want the software to solve</label><textarea id="bpProb" placeholder="We book trips on WhatsApp and track them on a whiteboard. Clients call us for updates all day. We only find out about a delay when the driver tells us, and invoices go out late because nobody has the trip papers in one place."></textarea></div><div class="tl-q"><label>Industry</label><select id="bpInd"><option value="Logistics and fleet" selected>Logistics and fleet</option><option value="Construction and contracting">Construction and contracting</option><option value="Manufacturing">Manufacturing</option><option value="Facilities management">Facilities management</option><option value="Oil, gas and energy">Oil, gas and energy</option><option value="Healthcare and clinics">Healthcare and clinics</option><option value="Retail and distribution">Retail and distribution</option><option value="Professional services">Professional services</option><option value="SaaS and technology">SaaS and technology</option><option value="Education and training">Education and training</option><option value="Real estate">Real estate</option><option value="Hospitality and events">Hospitality and events</option><option value="Finance and lending">Finance and lending</option><option value="Agencies and studios">Agencies and studios</option><option value="Nonprofit">Nonprofit</option><option value="Something else">Something else</option></select></div>
+          <button class="btn btn-primary tl-run" id="tlRun" type="button">Design my application<span class="shine"></span></button>
+          <p class="tl-note">We read the public page at that address, nothing else. Your answers are not stored unless you ask for the blueprint.</p>
         </form>
-        <div class="panel tl-out rev" id="tlOut"><div class="tl-empty"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h10" stroke-linecap="round"/></svg><p style="margin:0">Your answer appears here. The number is usually two to three times what people guess.</p></div></div>
+        <div class="panel tl-out rev bp-out" id="tlOut"><div class="tl-empty"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h10" stroke-linecap="round"/></svg><p style="margin:0">Your blueprint appears here: the screens, the roles, the features and a four week plan, all drawn for your company.</p></div></div>
       </div>
     </div>
   </section>
 
   <section class="sec" style="padding-top:20px">
     <div class="wrap">
-      <div class="sec-h rev"><span class="kick"><b>02</b> Why the number is always bigger</span>
-        <h2 class="chrome-text">Three costs nobody puts in the <mark>spreadsheet</mark>.</h2></div>
-      <div class="grid3 stag"><div class="card" data-tilt="6"><span class="num">01</span><h3>Work done twice</h3><p>Rework is invisible because it looks like normal work. It is the single biggest line in most audits we run.</p></div><div class="card" data-tilt="6"><span class="num">02</span><h3>Copying between tools</h3><p>Every extra place the same data lives costs about ninety minutes a person a week, forever.</p></div><div class="card" data-tilt="6"><span class="num">03</span><h3>Unwinding mistakes</h3><p>A wrong number caught late takes roughly three hours to trace, correct and explain. Multiply by how often it happens.</p></div></div>
+      <div class="sec-h rev"><span class="kick"><b>02</b> How this is different</span>
+        <h2 class="chrome-text">Built from <mark>your website</mark>, not a template.</h2></div>
+      <div class="grid3 stag"><div class="card" data-tilt="6"><span class="num">01</span><h3>It reads what you do</h3><p>The blueprint uses your own services, your customers and your words, so the screens look like your business rather than a demo.</p></div><div class="card" data-tilt="6"><span class="num">02</span><h3>You see the screens</h3><p>Every module is drawn out: the table, the board, the dashboard, the form. It is much easier to say yes or no to a picture.</p></div><div class="card" data-tilt="6"><span class="num">03</span><h3>It names the risks</h3><p>Including the parts that usually go wrong in your industry, and what we would do about them before they cost you anything.</p></div></div>
     </div>
   </section>
 
   <section class="sec">
     <div class="wrap"><div class="panel pad rev" style="text-align:center;padding:60px 34px">
-      <h2 class="chrome-text" style="font-size:clamp(25px,2.9vw,36px)">Want the same audit on the whole process, not one part?</h2>
-      <p style="color:var(--t2);margin:16px auto 0;max-width:58ch">Twenty minutes on a call and we will map where the time goes end to end, whether or not you build anything with us.</p>
+      <h2 class="chrome-text" style="font-size:clamp(25px,2.9vw,36px)">Like what you see? That is what we would build.</h2>
+      <p style="color:var(--t2);margin:16px auto 0;max-width:58ch">Bring the blueprint to a call. We will tell you what version one takes, at a fixed price, with a date.</p>
       <div class="hero-cta" style="justify-content:center;margin-top:26px">
         <a class="btn btn-primary btn-lg" href="contact.html">Book a 20 minute call<span class="shine"></span></a>
         <a class="btn btn-ghost btn-lg" href="tools.html">Try another tool</a></div>

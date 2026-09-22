@@ -429,8 +429,176 @@
     doc.getElementById('sbApp').scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
 
+
+  /* 6 --------------------------------------------------------- blueprint */
+  function pill(txt, i) {
+    var c = /done|closed|approved|complete|paid|active/i.test(txt) ? 'g' : /progress|review|pending|open|new/i.test(txt) ? 'a' : '';
+    return '<span class="scn-pill ' + c + '">' + esc(txt) + '</span>';
+  }
+
+  function screen(m, i) {
+    var t = m.template || 'table', cols = m.columns || [], rows = m.rows || [], st = m.statuses || [], body = '';
+
+    if (t === 'table' || t === 'portal') {
+      var side = t === 'portal'
+        ? '<div class="scn-side">' + (BP.modules || []).slice(0, 5).map(function (x, j) {
+          return '<span class="' + (j === i ? 'on' : '') + '">' + esc((x.name || '').slice(0, 12)) + '</span>';
+        }).join('') + '</div>' : '';
+      var tbl = '<table class="scn-t"><thead><tr>' + cols.map(function (c) { return '<th>' + esc(c) + '</th>'; }).join('') +
+        '</tr></thead><tbody>' + rows.slice(0, 4).map(function (r) {
+          return '<tr>' + r.map(function (cell, k) {
+            return '<td>' + (k === r.length - 1 && r.length > 1 ? pill(cell) : esc(cell)) + '</td>';
+          }).join('') + '</tr>';
+        }).join('') + '</tbody></table>';
+      body = side ? '<div class="scn-p">' + side + '<div>' + tbl + '</div></div>' : tbl;
+
+    } else if (t === 'kanban') {
+      body = '<div class="scn-kb">' + (st.length ? st : ['To do', 'Doing', 'Done']).slice(0, 3).map(function (s, j) {
+        var cards = rows.slice(j, j + 2).map(function (r) {
+          return '<div class="scn-cd">' + esc(r[0] || 'Item') + '<i></i></div>';
+        }).join('') || '<div class="scn-cd">Item<i></i></div>';
+        return '<div class="scn-col"><h6>' + esc(s) + '</h6>' + cards + '</div>';
+      }).join('') + '</div>';
+
+    } else if (t === 'dashboard') {
+      var k = (m.kpis || []).slice(0, 3);
+      var hs = [54, 78, 42, 90, 66, 34, 72];
+      body = '<div class="scn-kpis">' + (k.length ? k : [{ label: 'Open', value: '24' }]).map(function (x) {
+        return '<div class="scn-kpi"><b>' + esc(x.value) + '</b><span>' + esc(x.label) + '</span>' +
+          (x.delta ? '<em>' + esc(x.delta) + '</em>' : '') + '</div>';
+      }).join('') + '</div><div class="scn-chart">' + hs.map(function (h, j) {
+        return '<i style="height:' + h + '%;animation-delay:' + (j * 60) + 'ms"></i>';
+      }).join('') + '</div>' +
+        '<table class="scn-t"><tbody>' + rows.slice(0, 2).map(function (r) {
+          return '<tr>' + r.slice(0, 3).map(function (cell, kk) {
+            return '<td>' + (kk === 2 ? pill(cell) : esc(cell)) + '</td>';
+          }).join('') + '</tr>';
+        }).join('') + '</tbody></table>';
+
+    } else if (t === 'form') {
+      body = '<div class="scn-f">' + (m.fields || ['Field', 'Field', 'Field', 'Field']).slice(0, 6).map(function (f) {
+        return '<div><small>' + esc(f) + '</small><i></i></div>';
+      }).join('') + '</div><div class="scn-btn">Submit</div>';
+
+    } else {  /* calendar */
+      var labels = (st.length ? st : ['Visit', 'Service', 'Audit']);
+      body = '<div class="scn-cal">' + [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(function (d, j) {
+        var has = j === 1 || j === 4 || j === 8;
+        return '<div class="' + (has ? 'has' : '') + '">' + d +
+          (has ? '<em>' + esc(labels[j % labels.length]) + '</em>' : '') + '</div>';
+      }).join('') + '</div>';
+    }
+
+    return '<div class="scn"><div class="scn-bar"><i></i><i></i><i></i><span>' +
+      esc((BP.app && BP.app.name ? BP.app.name.toLowerCase().replace(/\s+/g, '') : 'app')) + '.app / ' +
+      esc((m.name || '').toLowerCase()) + '</span></div><div class="scn-body">' + body + '</div></div>';
+  }
+
+  var BP = {};
+  function blueprint() {
+    var co = val('bpName').trim(), site = val('bpSite').trim(), what = val('bpWhat').trim(),
+      prob = val('bpProb').trim(), ind = val('bpInd');
+    if (!co || what.length < 20 || prob.length < 20) {
+      fail('Add the company name, a line about what you do, and the problems you want solved. Twenty characters each is enough.');
+      return;
+    }
+    var input = 'Company: ' + co + '\nWebsite: ' + (site || 'not given') + '\nIndustry: ' + ind +
+      '\nWhat they do, in their words: ' + what + '\nProblems they want the software to solve: ' + prob;
+    loading('Reading ' + (site || co) + ' and designing the application',
+      'We read your site, study the usual problems in ' + ind.toLowerCase() + ', then draw the screens. About thirty seconds.');
+
+    fetch(WORKER.replace(/\/$/, '') + '/blueprint', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ input: input, url: site })
+    }).then(function (r) { return r.json().then(function (d) { return { ok: r.ok, d: d }; }); })
+      .then(function (res) {
+        if (!res.ok || !res.d.result) { fail(res.d && res.d.error ? res.d.error : 'Something went wrong. Try again in a moment.'); return; }
+        BP = res.d.result;
+        renderBlueprint(co);
+        wireGrab({
+          tool: 'Application Blueprint',
+          summary: 'Company: ' + co + ' (' + site + ', ' + ind + ')\nApp: ' + (BP.app || {}).name + '\n' +
+            ((BP.app || {}).one_line || '') + '\n\nTheir problems:\n' + prob.slice(0, 600)
+        }, unlock);
+        fills();
+        var o = out(); if (o && o.scrollIntoView) o.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }).catch(function () {
+        fail('Could not reach the generator. Check your connection and try again, or book a call and we will run it with you.');
+      });
+  }
+
+  function renderBlueprint(co) {
+    var A = BP.app || {}, R = BP.read || {}, mods = BP.modules || [], sec = function (kick, title, inner, locked) {
+      return '<div class="bp-sec"' + (locked ? ' data-locked hidden' : '') + '><h4>' + esc(kick) + '</h4><h5>' + esc(title) + '</h5>' + inner + '</div>';
+    };
+
+    var signals = (R.signals || []).map(function (s) { return '<span>' + esc(s) + '</span>'; }).join('');
+    var problems = (BP.problems || []).map(function (p) {
+      return '<div class="bp-card"><b>' + esc(p.said) + '</b><p>' + esc(p.costs) + '</p>' +
+        '<span class="fix">Fixed by: ' + esc(p.fixed_by) + '</span></div>';
+    }).join('');
+    var roles = (BP.roles || []).map(function (r) {
+      return '<div class="bp-card"><b>' + esc(r.role) + '</b><p>Opens on ' + esc(r.sees) + '. ' + esc(r.does) + '</p></div>';
+    }).join('');
+    var feats = (BP.features || []).map(function (f) {
+      return '<div class="bp-card"><b>' + esc(f.title) + '</b><p>' + esc(f.body) + '</p></div>';
+    }).join('');
+    var nums = (BP.benefits || []).map(function (b) {
+      return '<div class="bp-num"><b>' + esc(b.value) + '</b><span>' + esc(b.label) + '</span><p>' + esc(b.note) + '</p></div>';
+    }).join('');
+    var ints = (BP.integrations || []).map(function (i) {
+      return '<div class="bp-card"><b>' + esc(i.tool) + '</b><p>' + esc(i.why) + '</p></div>';
+    }).join('');
+    var plan = (BP.phases || []).map(function (p) {
+      return '<div class="wk"><b>' + esc(p.week) + '</b><p>' + esc(p.does) + '</p></div>';
+    }).join('');
+    var risks = (BP.risks || []).map(function (r) {
+      return '<div class="bp-card"><b>' + esc(r.risk) + '</b><p>' + esc(r.handle) + '</p></div>';
+    }).join('');
+
+    function modBlock(m, i) {
+      return '<div class="bp-mod' + (i % 2 ? ' flip' : '') + '"><div class="bp-copy"><span class="n">' +
+        ('0' + (i + 1)).slice(-2) + '</span><h6>' + esc(m.name) + '</h6><p>' + esc(m.purpose) + '</p>' +
+        '<div class="who">' + (BP.roles || []).slice(0, 3).map(function (r) { return '<span>' + esc(r.role) + '</span>'; }).join('') +
+        '</div></div><div>' + screen(m, i) + '</div></div>';
+    }
+
+    out().innerHTML = '<div class="bp">' +
+      '<div class="bp-hero"><span class="lbl">Application blueprint for ' + esc(co) + '</span>' +
+      '<h3>' + esc(A.name || 'Your application') + '</h3><p>' + esc(A.one_line || '') + '</p>' +
+      '<div class="bp-facts"><span>' + mods.length + ' modules</span><span>' + (BP.roles || []).length + ' roles</span>' +
+      '<span>' + (BP.phases || []).length + ' week build</span><span>' + esc((BP.integrations || []).length) + ' integrations</span></div></div>' +
+
+      sec('What we read on your site', R.does || 'What you do',
+        '<p style="color:var(--t2);font-size:15px;line-height:1.7;margin:0 0 14px;max-width:70ch">' +
+        esc(R.serves || '') + '</p><div class="bp-facts">' + signals + '</div>') +
+
+      sec('The problems this solves', 'Where the day goes today.', '<div class="bp-grid">' + problems + '</div>') +
+
+      sec('The application', 'What you would be using, screen by screen.',
+        mods.slice(0, 1).map(modBlock).join('') +
+        '<div data-locked hidden>' + mods.slice(1).map(function (m, i) { return modBlock(m, i + 1); }).join('') + '</div>') +
+
+      sec('Who signs in', 'Every role opens on the thing they need.', '<div class="bp-grid">' + roles + '</div>', true) +
+
+      sec('What it does for you', 'The reason to build it.', '<div class="bp-nums">' + nums + '</div>', true) +
+
+      sec('Features that matter', 'Six things your team would feel in week one.', '<div class="bp-grid">' + feats + '</div>', true) +
+
+      sec('Connects to', 'It fits the tools you already pay for.', '<div class="bp-grid">' + ints + '</div>', true) +
+
+      sec('How it gets built', 'Four weeks, in the open.',
+        '<p style="color:var(--t2);font-size:15px;line-height:1.7;margin:0 0 18px;max-width:70ch">' + esc(A.why_now || '') + '</p>' + plan, true) +
+
+      sec('What could go wrong', 'Named early, handled in the plan.', '<div class="bp-grid">' + risks + '</div>', true) +
+
+      '<div class="bp-sec">' + grab('See the whole blueprint',
+        'Every module drawn out, the roles, the features, what it saves you, the integrations, the four week plan and the risks.', {}) + '</div>' +
+      '</div>';
+  }
+
   /* wiring --------------------------------------------------------------- */
-  var RUN = { leak: leak, bb: buildbuy, spec: spec, auto: automation, sandbox: sandbox };
+  var RUN = { leak: leak, bb: buildbuy, spec: spec, auto: automation, sandbox: sandbox, blueprint: blueprint };
   var btn = doc.getElementById('tlRun');
   if (btn && RUN[tool]) btn.onclick = function () { RUN[tool](); };
 
