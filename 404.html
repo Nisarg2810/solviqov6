@@ -1,7 +1,20 @@
 <!doctype html>
 <html lang="en" class="v6" data-mascot="off">
 <head>
-<script>(function(){var m=location.pathname.match(/^(.*\/)application\/(.+?)\/?$/);if(m){location.replace(m[1]+"application/?c="+encodeURIComponent(m[2]));}})();</script>
+<script>window.__late=[{css:"assets/site.css?v=32"},{js:"assets/site.js?v=17"},{js:"assets/features.js?v=9"},{js:"assets/home-oti.js?v=1"},{js:"assets/vsl.js?v=1"}];</script>
+<script>(function(){
+  var m = location.pathname.match(/^(.*\/)application\/(.+?)\/?$/);
+  if (m) { location.replace(m[1] + 'application/?c=' + encodeURIComponent(m[2])); return; }
+  window.__is404 = 1;                       /* a real 404: bring the page to life */
+  document.addEventListener('DOMContentLoaded', function () {
+    (window.__late || []).forEach(function (t) {
+      var e;
+      if (t.css) { e = document.createElement('link'); e.rel = 'stylesheet'; e.href = t.css; }
+      else { e = document.createElement('script'); e.src = t.js; e.async = false; }
+      document.head.appendChild(e);
+    });
+  });
+})();</script>
 
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -16,7 +29,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Caveat:wght@600;700&display=swap">
-<link rel="stylesheet" href="assets/site.css?v=32">
+
 <script>(function(){try{var t=localStorage.getItem('solviqo-theme');if(!t)t=matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',t);}catch(e){document.documentElement.setAttribute('data-theme','dark');}})();</script>
 <script>try{if(!sessionStorage.getItem('sv-seen')&&!matchMedia('(prefers-reduced-motion: reduce)').matches)document.documentElement.classList.add('is-loading');}catch(e){}</script>
 </head>
@@ -126,9 +139,9 @@
 </footer>
 
 <script>window.SV_PAGES=[["Service", "Web Apps", "service-web-apps.html"], ["Service", "Internal Tools", "service-internal-tools.html"], ["Service", "Integrations", "service-integrations.html"], ["Service", "Dashboards", "service-dashboards.html"], ["Use case", "Approvals and sign offs", "use-case-approvals.html"], ["Use case", "Case and ticket management", "use-case-case-management.html"], ["Use case", "Inspections and audits", "use-case-inspections.html"], ["Use case", "Asset and equipment tracking", "use-case-asset-tracking.html"], ["Use case", "Inventory and stock", "use-case-inventory.html"], ["Use case", "Scheduling and bookings", "use-case-scheduling.html"], ["Use case", "Customer and vendor portals", "use-case-portals.html"], ["Use case", "Admin panels and back office", "use-case-admin-panels.html"], ["Use case", "Dashboards and reporting", "use-case-dashboards.html"], ["Use case", "Forms and data capture", "use-case-forms.html"], ["Use case", "ERP and CRM integrations", "use-case-integrations.html"], ["Use case", "Alerts, reminders and escalations", "use-case-alerts.html"], ["Industry", "Construction and contracting", "industry-construction.html"], ["Industry", "Facilities management", "industry-facilities.html"], ["Industry", "Logistics and fleet", "industry-logistics.html"], ["Industry", "Oil, gas and energy", "industry-energy.html"], ["Industry", "Manufacturing", "industry-manufacturing.html"], ["Industry", "Healthcare and clinics", "industry-healthcare.html"], ["Industry", "Retail and distribution", "industry-retail.html"], ["Industry", "Startups and new products", "industry-startups.html"], ["Page", "Use cases", "use-cases.html"], ["Page", "Industries", "industries.html"]];</script>
-<script src="assets/site.js?v=17"></script>
-<script src="assets/features.js?v=9"></script>
-<script src="assets/home-oti.js?v=1"></script>
-<script src="assets/vsl.js?v=1"></script>
+
+
+
+
 </body>
 </html>
