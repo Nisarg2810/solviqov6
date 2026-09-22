@@ -771,14 +771,23 @@
       .then(function (res) {
         if (!res.ok || !res.d.result) { fail(res.d && res.d.error ? res.d.error : 'Something went wrong. Try again in a moment.'); return; }
         BP = res.d.result;
-        window.__bpMeta = { company: co, site: site, industry: ind, when: Date.now() };
+        var d = { company: co, site: site, industry: ind, when: Date.now(), result: BP };
+        window.__bpMeta = d;
         var slug = co.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 48) || 'company';
-        try {
-          localStorage.setItem('sv-bp:' + slug, JSON.stringify({ company: co, site: site, industry: ind, when: Date.now(), result: BP }));
-          localStorage.setItem('sv-bp-last', slug);
-        } catch (e) {}
         var base = location.pathname.replace(/[^/]*$/, '');
-        location.href = base + 'application/?c=' + encodeURIComponent(slug);
+        var keep = function (id) {
+          try {
+            localStorage.setItem('sv-bp:' + id, JSON.stringify(d));
+            localStorage.setItem('sv-bp-last', id);
+          } catch (e) {}
+          location.href = base + 'application/?c=' + encodeURIComponent(id);
+        };
+        loading('Saving your blueprint', 'One moment, it is getting its own address.');
+        fetch(WORKER.replace(/\/$/, '') + '/publish', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(d)
+        }).then(function (r) { return r.ok ? r.json() : null; })
+          .then(function (p) { keep(p && p.id ? p.id : slug); })
+          .catch(function () { keep(slug); });          // offline or blocked: still works in this browser
         return;
         wireGrab({
           tool: 'Application Blueprint',
@@ -929,45 +938,24 @@
         (d.until ? '<p class="lede" style="margin-top:6px;font-size:14px;color:var(--t3)">Shared link, open until ' +
           new Date(d.until).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) + '</p>' : '') + '</div>' +
         '<div class="app-acts"><button class="btn btn-primary" type="button" onclick="window.svPrint(this)">Download PDF<span class="shine"></span></button>' +
-        (KEY && !shared ? '<button class="btn btn-ghost" type="button" id="shareBtn">Create share link</button>' : '') +
+        '<button class="btn btn-ghost" type="button" id="shareBtn">Copy share link</button>' +
         '<a class="btn btn-ghost" href="../tool-blueprint.html">New blueprint</a></div>';
       var sb = doc.getElementById('shareBtn');
-      if (sb) sb.onclick = function () { share(sb, d); };
+      if (sb) sb.onclick = function () {
+        var link = location.origin + location.pathname.replace(/application\/.*$/, 'application/') + slug;
+        var f = doc.createElement('input');
+        f.value = link; f.style.cssText = 'position:fixed;left:-9999px';
+        doc.body.appendChild(f); f.select();
+        try { doc.execCommand('copy'); } catch (e) {}
+        if (navigator.clipboard) navigator.clipboard.writeText(link).catch(function () {});
+        doc.body.removeChild(f);
+        sb.textContent = 'Link copied';
+        setTimeout(function () { sb.textContent = 'Copy share link'; }, 2600);
+      };
     }
     out = function () { return host; };
     renderBlueprint(d.company);
     fills();
-  }
-
-  function share(btn, d) {
-    var label = btn.textContent;
-    btn.disabled = true; btn.textContent = 'Creating link';
-    fetch(WORKER.replace(/\/$/, '') + '/publish', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-publish-key': KEY },
-      body: JSON.stringify({ company: d.company, site: d.site, industry: d.industry, when: d.when, result: d.result })
-    }).then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); })
-      .then(function (res) {
-        btn.disabled = false; btn.textContent = label;
-        if (!res.ok) { alert(res.j && res.j.error ? res.j.error : 'Could not create the link.'); return; }
-        var link = location.origin + location.pathname.replace(/application\/.*$/, 'application/') + res.j.id;
-        var box = doc.createElement('div');
-        box.className = 'share-box';
-        box.innerHTML = '<b>Shareable link, open for ' + res.j.days + ' days</b>' +
-          '<div class="share-row"><input type="text" readonly value="' + link + '" id="shareUrl">' +
-          '<button class="btn btn-primary" type="button" id="copyBtn">Copy</button></div>' +
-          '<p>Anyone with this link can read the blueprint. It stops working on ' +
-          new Date(res.j.until).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) + '.</p>';
-        btn.parentNode.parentNode.appendChild(box);
-        btn.style.display = 'none';
-        doc.getElementById('copyBtn').onclick = function () {
-          var f = doc.getElementById('shareUrl'); f.select();
-          try { doc.execCommand('copy'); } catch (e) {}
-          if (navigator.clipboard) navigator.clipboard.writeText(link).catch(function () {});
-          this.textContent = 'Copied';
-        };
-      })
-      .catch(function () { btn.disabled = false; btn.textContent = label; alert('Could not reach the server.'); });
   }
 
   /* wiring --------------------------------------------------------------- */
