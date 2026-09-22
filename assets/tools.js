@@ -2,7 +2,7 @@
 (function () {
   'use strict';
 
-  var WORKER = 'https://solviqo-tools.nisarg2810.workers.dev';   // set this to your deployed worker
+  var WORKER = 'https://solviqo-tools.nisargmehta-1028.workers.dev';   // set this to your deployed worker
   var EJ = { key: 'QX_zYoZlN7ibZXYNv', service: 'nisargmehta2810', template: 'template_wa24pe8' };
 
   var doc = document, tool = doc.body.getAttribute('data-tool');
