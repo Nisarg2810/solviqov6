@@ -44,7 +44,7 @@
   /* actions shown under every result (no email gate, this is used internally) */
   function grab() {
     return '<div class="grab"><div style="display:flex;gap:10px;flex-wrap:wrap">' +
-      '<button class="btn btn-ghost" type="button" onclick="window.svPrint()">Download PDF</button>' +
+      '<button class="btn btn-ghost" type="button" onclick="window.svPrint(this)">Download PDF</button>' +
       '<a class="btn btn-primary" href="contact.html">Talk it through in 20 minutes<span class="shine"></span></a></div></div>';
   }
   function wireGrab(payload, onUnlock) { if (onUnlock) onUnlock(); }
@@ -53,15 +53,284 @@
     fills();
   }
 
-  /* print: flip to the light theme so a PDF is readable, then flip back */
-  window.svPrint = function () {
-    var root = doc.documentElement, was = root.getAttribute('data-theme');
-    root.setAttribute('data-theme', 'light');
-    root.classList.add('printing');
-    setTimeout(function () {
-      window.print();
-      setTimeout(function () { root.setAttribute('data-theme', was || 'dark'); root.classList.remove('printing'); }, 600);
-    }, 260);
+  /* download a real PDF file, drawn from the blueprint data */
+  function load(src) {
+    return new Promise(function (ok, no) {
+      var t = doc.createElement('script'); t.src = src; t.onload = ok; t.onerror = no; doc.head.appendChild(t);
+    });
+  }
+
+
+  /* ------------------------------------------------- the PDF, drawn not screenshotted */
+  var INK = [16, 21, 30], GREY = [104, 118, 136], LINE = [222, 227, 234], AMBER = [205, 110, 6], SOFT = [250, 246, 240];
+
+  function pdfBuild(meta) {
+    var jsPDF = window.jspdf && window.jspdf.jsPDF;
+    var d = new jsPDF({ unit: 'mm', format: 'a4', compress: true });
+    var W = 210, M = 15, w = W - M * 2, y = 0, page = 1;
+
+    function font(size, weight, color) {
+      d.setFont('helvetica', weight || 'normal');
+      d.setFontSize(size);
+      d.setTextColor.apply(d, color || INK);
+    }
+    function room(need) {
+      if (y + need < 282) return;
+      foot(); d.addPage(); page++; y = M;
+    }
+    function foot() {
+      font(7.5, 'normal', GREY);
+      d.text('solviqodigital.com', M, 289);
+      d.text(String(page), W - M, 289, { align: 'right' });
+    }
+    function para(text, size, color, gap, weight, width) {
+      if (!text) return;
+      font(size, weight, color);
+      var lines = d.splitTextToSize(String(text), width || w);
+      for (var i = 0; i < lines.length; i++) {
+        room(6);
+        d.text(lines[i], M, y);
+        y += size * 0.48 + 1.1;
+      }
+      y += gap == null ? 3 : gap;
+    }
+    function kicker(t) {
+      room(16);
+      font(7.5, 'bold', AMBER);
+      d.text(String(t).toUpperCase(), M, y);
+      y += 5;
+    }
+    function heading(t) {
+      font(14, 'bold', INK);
+      var lines = d.splitTextToSize(String(t), w);
+      for (var i = 0; i < lines.length; i++) { room(9); d.text(lines[i], M, y); y += 7; }
+      y += 1.5;
+    }
+    function rule() { d.setDrawColor.apply(d, LINE); d.setLineWidth(0.2); d.line(M, y, W - M, y); y += 6; }
+
+    function cards(list, title, body, cols, tint) {
+      cols = cols || 2;
+      var cw = (w - 4 * (cols - 1)) / cols, i = 0;
+      while (i < list.length) {
+        var rowItems = list.slice(i, i + cols), h = 0, texts = [];
+        rowItems.forEach(function (it) {
+          font(9.5, 'bold', INK);
+          var t1 = d.splitTextToSize(String(title(it) || ''), cw - 8);
+          font(8.5, 'normal', GREY);
+          var t2 = d.splitTextToSize(String(body(it) || ''), cw - 8);
+          texts.push([t1, t2]);
+          h = Math.max(h, 8 + t1.length * 4.4 + t2.length * 3.9);
+        });
+        room(h + 5);
+        rowItems.forEach(function (it, k) {
+          var x = M + k * (cw + 4);
+          d.setDrawColor.apply(d, LINE);
+          d.setFillColor.apply(d, tint ? SOFT : [255, 255, 255]);
+          d.roundedRect(x, y, cw, h, 2, 2, 'FD');
+          var yy = y + 6;
+          font(9.5, 'bold', INK);
+          texts[k][0].forEach(function (l) { d.text(l, x + 4, yy); yy += 4.4; });
+          yy += 0.6;
+          font(8.5, 'normal', GREY);
+          texts[k][1].forEach(function (l) { d.text(l, x + 4, yy); yy += 3.9; });
+        });
+        y += h + 4;
+        i += cols;
+      }
+      y += 3;
+    }
+
+    /* a simplified drawing of one app screen */
+    function shot(m) {
+      var h = 34, rows = (m.rows || []).slice(0, 3), cols = (m.columns || []).slice(0, 3);
+      if (m.template === 'dashboard') h = 36;
+      room(h + 6);
+      d.setDrawColor.apply(d, LINE); d.setFillColor(252, 252, 253);
+      d.roundedRect(M, y, w, h, 2, 2, 'FD');
+      d.setFillColor(246, 247, 249);
+      d.roundedRect(M, y, w, 7, 2, 2, 'F');
+      d.setFillColor(246, 247, 249); d.rect(M, y + 4, w, 3, 'F');
+      font(6.5, 'normal', GREY);
+      d.text(String(m.name || '').toLowerCase(), M + 4, y + 4.6);
+      var top = y + 12;
+
+      if (m.template === 'kanban') {
+        var st = (m.statuses || ['To do', 'Doing', 'Done']).slice(0, 3), cw2 = (w - 12) / 3;
+        st.forEach(function (s, i) {
+          var x = M + 4 + i * cw2;
+          font(6.5, 'bold', GREY); d.text(String(s).toUpperCase(), x, top);
+          var card = (m.rows || [])[i] || [];
+          d.setDrawColor.apply(d, LINE); d.setFillColor(255, 255, 255);
+          d.roundedRect(x, top + 2, cw2 - 4, 9, 1.5, 1.5, 'FD');
+          font(7.5, 'normal', INK);
+          d.text(d.splitTextToSize(String(card[0] || 'Item'), cw2 - 10)[0] || '', x + 2.5, top + 7.5);
+        });
+      } else if (m.template === 'dashboard') {
+        var k = (m.kpis || []).slice(0, 3), kw = (w - 12) / 3;
+        k.forEach(function (x0, i) {
+          var x = M + 4 + i * kw;
+          d.setDrawColor.apply(d, LINE); d.setFillColor(255, 255, 255);
+          d.roundedRect(x, top - 4, kw - 4, 13, 1.5, 1.5, 'FD');
+          font(11, 'bold', INK); d.text(String(x0.value || ''), x + 3, top + 2);
+          font(6.5, 'normal', GREY); d.text(String(x0.label || '').toUpperCase(), x + 3, top + 6.5);
+        });
+        var bx = M + 4, bw = (w - 10) / 7;
+        [12, 16, 9, 18, 13, 7, 15].forEach(function (hh, i) {
+          d.setFillColor(232, 168, 84);
+          d.rect(bx + i * bw, top + 22 - hh * 0.6, bw - 2.5, hh * 0.6, 'F');
+        });
+      } else if (m.template === 'form') {
+        var f = (m.fields || []).slice(0, 4), fw = (w - 12) / 2;
+        f.forEach(function (name, i) {
+          var x = M + 4 + (i % 2) * fw, yy = top - 3 + Math.floor(i / 2) * 9;
+          d.setDrawColor.apply(d, LINE); d.setFillColor(255, 255, 255);
+          d.roundedRect(x, yy, fw - 4, 7, 1.2, 1.2, 'FD');
+          font(6.8, 'normal', GREY); d.text(String(name), x + 2.5, yy + 4.4);
+        });
+      } else if (m.template === 'calendar') {
+        var cw3 = (w - 12) / 5;
+        for (var i2 = 0; i2 < 10; i2++) {
+          var x = M + 4 + (i2 % 5) * cw3, yy = top - 4 + Math.floor(i2 / 5) * 10;
+          var on = i2 === 1 || i2 === 7;
+          d.setDrawColor.apply(d, LINE);
+          d.setFillColor.apply(d, on ? [253, 243, 230] : [255, 255, 255]);
+          d.roundedRect(x, yy, cw3 - 3, 8.5, 1.2, 1.2, 'FD');
+          font(6.2, 'normal', on ? AMBER : GREY);
+          d.text(on ? String((m.statuses || ['Visit'])[i2 % (m.statuses || ['Visit']).length]).slice(0, 10) : String(i2 + 1), x + 2, yy + 5.2);
+        }
+      } else {
+        var colw = (w - 10) / Math.max(cols.length || 3, 1);
+        font(6.5, 'bold', GREY);
+        cols.forEach(function (c, i) { d.text(String(c).toUpperCase(), M + 5 + i * colw, top); });
+        d.setDrawColor.apply(d, LINE); d.line(M + 4, top + 1.5, W - M - 4, top + 1.5);
+        rows.forEach(function (r, ri) {
+          var yy = top + 6 + ri * 5.4;
+          font(7.5, 'normal', INK);
+          r.slice(0, cols.length || 3).forEach(function (cell, i) {
+            d.text(d.splitTextToSize(String(cell), colw - 3)[0] || '', M + 5 + i * colw, yy);
+          });
+        });
+      }
+      y += h + 6;
+    }
+
+    /* ---------------- the document ---------------- */
+    var A = BP.app || {}, R = BP.read || {}, S = BP.simple || {};
+    d.setFillColor(11, 14, 20); d.rect(0, 0, W, 46, 'F');
+    font(20, 'bold', [255, 255, 255]);
+    d.text(String(meta.company || ''), M, 22);
+    font(8.5, 'normal', [168, 180, 196]);
+    d.text([meta.site, meta.industry, 'prepared ' + new Date(meta.when || Date.now()).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })]
+      .filter(Boolean).join('   |   '), M, 30);
+    font(8, 'bold', [232, 137, 12]);
+    d.text('APPLICATION BLUEPRINT', M, 39);
+    y = 58;
+
+    font(17, 'bold', INK); d.text(String(A.name || 'Your application'), M, y); y += 8;
+    para(A.one_line, 10.5, GREY, 5);
+    rule();
+
+    if (R.does) { kicker('What we read on your site'); heading(R.does); para(R.serves, 9.5, GREY, 4); rule(); }
+
+    if (S.what_it_is) {
+      kicker('In plain words'); heading('What this app is.');
+      para(S.what_it_is, 10, INK, 4);
+      if ((S.before || []).length) {
+        var pairs = [];
+        var n = Math.max((S.before || []).length, (S.after || []).length);
+        for (var i = 0; i < n; i++) pairs.push({ a: (S.before || [])[i] || '', b: (S.after || [])[i] || '' });
+        cards(pairs, function (p) { return 'Today: ' + p.a; }, function (p) { return 'With the app: ' + p.b; }, 2, true);
+      }
+      rule();
+    }
+
+    if ((S.steps || []).length) {
+      kicker('Step by step'); heading('What a normal day looks like.');
+      cards(S.steps, function (s) { return 'Step ' + (s.n || ''); }, function (s) { return s.does; }, 2);
+      rule();
+    }
+
+    if ((BP.problems || []).length) {
+      kicker('The problems this solves'); heading('Where the day goes today.');
+      cards(BP.problems, function (p) { return p.said; }, function (p) { return p.costs + '  Fixed by: ' + p.fixed_by; }, 2);
+      rule();
+    }
+
+    kicker('The application'); heading('What you would be using, screen by screen.');
+    (BP.modules || []).forEach(function (m, i) {
+      room(26);
+      font(11, 'bold', INK); d.text(('0' + (i + 1)).slice(-2) + '  ' + String(m.name || ''), M, y); y += 5.5;
+      para(m.purpose, 9, GREY, 2);
+      shot(m);
+    });
+    rule();
+
+    if ((BP.roles || []).length) {
+      kicker('Who signs in'); heading('Every role opens on the thing they need.');
+      cards(BP.roles, function (r) { return r.role; }, function (r) { return 'Opens on ' + r.sees + '. ' + r.does; }, 2);
+      rule();
+    }
+
+    if ((BP.benefits || []).length) {
+      kicker('What it does for you'); heading('The reason to build it.');
+      cards(BP.benefits, function (b) { return b.value + '  ' + b.label; }, function (b) { return b.note; }, 2, true);
+      rule();
+    }
+
+    if ((BP.features || []).length) {
+      kicker('Features that matter'); heading('What your team would feel in week one.');
+      cards(BP.features, function (f) { return f.title; }, function (f) { return f.body; }, 2);
+      rule();
+    }
+
+    if ((BP.integrations || []).length) {
+      kicker('Connects to'); heading('It fits the tools you already pay for.');
+      cards(BP.integrations, function (x) { return x.tool; }, function (x) { return x.why; }, 3);
+      rule();
+    }
+
+    if ((BP.phases || []).length) {
+      kicker('How it gets built'); heading('Four weeks, in the open.');
+      para(A.why_now, 9.5, GREY, 4);
+      cards(BP.phases, function (p) { return p.week; }, function (p) { return p.does; }, 2);
+      rule();
+    }
+
+    if ((BP.risks || []).length) {
+      kicker('What could go wrong'); heading('Named early, handled in the plan.');
+      cards(BP.risks, function (r) { return r.risk; }, function (r) { return r.handle; }, 2);
+      rule();
+    }
+
+    if ((S.faq || []).length) {
+      kicker('Questions people ask'); heading('Short answers, no jargon.');
+      cards(S.faq, function (f) { return f.q; }, function (f) { return f.a; }, 2);
+    }
+
+    room(30);
+    d.setFillColor(11, 14, 20); d.roundedRect(M, y, w, 22, 2, 2, 'F');
+    font(11, 'bold', [255, 255, 255]);
+    d.text('Want this built? Twenty minutes is enough to know.', M + 6, y + 9);
+    font(9, 'normal', [168, 180, 196]);
+    d.text('solviqodigital.com  |  solviqodigital@gmail.com', M + 6, y + 16);
+    y += 26;
+    foot();
+    return d;
+  }
+
+  window.svPrint = function (btn) {
+    var label = btn && btn.textContent;
+    var meta = window.__bpMeta || {};
+    var done = function () { if (btn) { btn.textContent = label; btn.disabled = false; } };
+    if (!BP || !BP.app) { window.print(); return; }
+    if (btn) { btn.textContent = 'Building your PDF'; btn.disabled = true; }
+    (window.jspdf ? Promise.resolve() : load('https://cdnjs.cloudflare.com/ajax/libs/jspdf/3.0.1/jspdf.umd.min.js'))
+      .then(function () {
+        var name = ((meta.company || 'application') + ' blueprint').replace(/[^a-z0-9]+/gi, '-').toLowerCase() + '.pdf';
+        pdfBuild(meta).save(name);
+        done();
+      })
+      .catch(function () { done(); window.print(); });
   };
 
   /* 1 ---------------------------------------------------- spreadsheet leak */
@@ -492,6 +761,7 @@
       .then(function (res) {
         if (!res.ok || !res.d.result) { fail(res.d && res.d.error ? res.d.error : 'Something went wrong. Try again in a moment.'); return; }
         BP = res.d.result;
+        window.__bpMeta = { company: co, site: site, industry: ind, when: Date.now() };
         var slug = co.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 48) || 'company';
         try {
           localStorage.setItem('sv-bp:' + slug, JSON.stringify({ company: co, site: site, industry: ind, when: Date.now(), result: BP }));
@@ -513,7 +783,7 @@
   }
 
   function renderBlueprint(co) {
-    var A = BP.app || {}, R = BP.read || {}, mods = BP.modules || [], sec = function (kick, title, inner, locked) {
+    var A = BP.app || {}, R = BP.read || {}, S = BP.simple || {}, mods = BP.modules || [], sec = function (kick, title, inner, locked) {
       return '<div class="bp-sec"' + '' + '><h4>' + esc(kick) + '</h4><h5>' + esc(title) + '</h5>' + inner + '</div>';
     };
 
@@ -560,6 +830,19 @@
 
       sec('The problems this solves', 'Where the day goes today.', '<div class="bp-grid">' + problems + '</div>') +
 
+      (S.what_it_is ? sec('In plain words', 'What this app is.',
+        '<p class="plain">' + esc(S.what_it_is) + '</p>' +
+        (S.before && S.after ? '<div class="ba2">' +
+          '<div class="ba-col now"><h6>How it works today</h6><ul>' +
+          (S.before || []).map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul></div>' +
+          '<div class="ba-col next"><h6>How it works with the app</h6><ul>' +
+          (S.after || []).map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul></div></div>' : '')) : '') +
+
+      ((S.steps || []).length ? sec('Step by step', 'What a normal day looks like.',
+        '<div class="steps3">' + (S.steps || []).map(function (x, i) {
+          return '<div class="step3"><b>' + esc(x.n || (i + 1)) + '</b><p>' + esc(x.does) + '</p></div>';
+        }).join('') + '</div>') : '') +
+
       sec('The application', 'What you would be using, screen by screen.',
         mods.slice(0, 1).map(modBlock).join('') +
         '<div>' + mods.slice(1).map(function (m, i) { return modBlock(m, i + 1); }).join('') + '</div>') +
@@ -576,6 +859,11 @@
         '<p style="color:var(--t2);font-size:15px;line-height:1.7;margin:0 0 18px;max-width:70ch">' + esc(A.why_now || '') + '</p>' + plan, true) +
 
       sec('What could go wrong', 'Named early, handled in the plan.', '<div class="bp-grid">' + risks + '</div>', true) +
+
+      ((S.faq || []).length ? sec('Questions people ask', 'Short answers, no jargon.',
+        '<div class="bp-grid">' + (S.faq || []).map(function (f) {
+          return '<div class="bp-card"><b>' + esc(f.q) + '</b><p>' + esc(f.a) + '</p></div>';
+        }).join('') + '</div>') : '') +
 
       '<div class="bp-sec">' + grab('See the whole blueprint',
         'Every module drawn out, the roles, the features, what it saves you, the integrations, the four week plan and the risks.', {}) + '</div>' +
@@ -602,6 +890,7 @@
     }
     var d = JSON.parse(raw);
     BP = d.result || {};
+    window.__bpMeta = d;
     doc.title = (BP.app && BP.app.name ? BP.app.name : 'Application') + ' for ' + d.company + ', Solviqo';
     var pretty = location.pathname.replace(/application\/.*$/, 'application/') + slug;
     try { history.replaceState({}, '', pretty); } catch (e) {}
@@ -611,7 +900,7 @@
         esc(d.company) + '</h1><p class="lede" style="margin-top:10px">' +
         esc(d.site || '') + (d.industry ? ' &middot; ' + esc(d.industry) : '') + ' &middot; prepared ' +
         new Date(d.when || Date.now()).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) + '</p></div>' +
-        '<div class="app-acts"><button class="btn btn-primary" type="button" onclick="window.svPrint()">Download PDF<span class="shine"></span></button>' +
+        '<div class="app-acts"><button class="btn btn-primary" type="button" onclick="window.svPrint(this)">Download PDF<span class="shine"></span></button>' +
         '<a class="btn btn-ghost" href="tool-blueprint.html">New blueprint</a></div>';
     }
     out = function () { return host; };
