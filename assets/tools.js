@@ -53,8 +53,9 @@
 
   /* actions shown under every result (no email gate, this is used internally) */
   function grab() {
-    return '<div class="grab"><div style="display:flex;gap:10px;flex-wrap:wrap">' +
-      '<button class="btn btn-ghost" type="button" onclick="window.svPrint(this)">Download PDF</button>' +
+    var pdf = tool === 'outreach' ? '' :
+      '<button class="btn btn-ghost" type="button" onclick="window.svPrint(this)">Download PDF</button>';
+    return '<div class="grab"><div style="display:flex;gap:10px;flex-wrap:wrap">' + pdf +
       '<a class="btn btn-primary" href="contact.html">Talk it through in 20 minutes<span class="shine"></span></a></div></div>';
   }
   function wireGrab(payload, onUnlock) { if (onUnlock) onUnlock(); }
@@ -895,6 +896,69 @@
       '</div>';
   }
 
+
+  /* 7 ---------------------------------------------------------- outreach */
+  function outreach() {
+    var co = val('orName').trim(), site = val('orSite').trim(), who = val('orPerson').trim(),
+      role = val('orRole').trim(), note = val('orNote').trim(), chan = val('orChan');
+    if (!co || !who) { fail('Add the company and the name of the person you are writing to.'); return; }
+    var input = 'Company: ' + co + '\nWebsite: ' + (site || 'not given') +
+      '\nPerson: ' + who + '\nTheir role: ' + (role || 'not stated') +
+      '\nChannel: ' + chan + '\nWhat I noticed: ' + (note || 'nothing in particular, work from the site');
+    loading('Reading ' + (site || co) + ' and writing to ' + who,
+      'Their site, the likely operational gap, then three ways to open it.');
+
+    call('outreach', { input: input, url: site }).then(function (r) {
+      return r.json().then(function (d) { return { ok: r.ok, d: d }; });
+    }).then(function (res) {
+      if (!res.ok || !res.d.result) { fail(res.d && res.d.error ? res.d.error : 'Something went wrong. Try again in a moment.'); return; }
+      var R = res.d.result;
+      var opts = (R.options || []).map(function (o, i) {
+        var n = (o.message || '').length;
+        return '<div class="ow-o"><div class="ow-h"><span class="tl-tag acc">' + esc(o.label) + '</span>' +
+          '<span class="ow-n">' + n + ' characters</span>' +
+          '<button class="btn btn-ghost ow-c" type="button" data-copy="' + i + '">Copy</button></div>' +
+          '<pre class="ow-m" id="owM' + i + '">' + esc(o.message) + '</pre></div>';
+      }).join('');
+      var subs = (R.subject_lines || []).map(function (s2) { return '<span>' + esc(s2) + '</span>'; }).join('');
+      var picks = (R.picks || []).map(function (p) {
+        return '<div class="mini"><b>' + esc(p.use_case) + '</b><p>' + esc(p.why) + '</p></div>';
+      }).join('');
+      var RD = R.read || {};
+
+      out().innerHTML = '<div class="res">' +
+        '<div class="res-top"><span class="lbl">Writing to ' + esc(who) + ' at ' + esc(co) + '</span>' +
+        '<div class="big" style="font-size:clamp(22px,2.4vw,30px)">' + esc(R.angle || '') + '</div>' +
+        '<p>' + esc(RD.does || '') + '</p>' +
+        (RD.role_pain ? '<p style="color:var(--t3)">' + esc(RD.role_pain) + '</p>' : '') +
+        (RD.signals ? '<div class="chips" style="margin-top:14px">' + RD.signals.map(function (x) {
+          return '<span>' + esc(x) + '</span>'; }).join('') + '</div>' : '') + '</div>' +
+        '<div class="res-body">' +
+        (picks ? '<div class="blk"><h4>What we would offer to build</h4>' + picks + '</div>' : '') +
+        '<div class="blk"><h4>Three ways to open it</h4>' + opts + '</div>' +
+        (subs ? '<div class="blk"><h4>Subject lines</h4><div class="chips ow-s">' + subs + '</div></div>' : '') +
+        (R.follow_up ? '<div class="blk"><h4>If there is no reply</h4><pre class="ow-m">' + esc(R.follow_up) + '</pre></div>' : '') +
+        grab() + '</div></div>';
+
+      $$('.ow-c', out()).forEach(function (b) {
+        b.onclick = function () {
+          var pre = doc.getElementById('owM' + b.getAttribute('data-copy'));
+          var f = doc.createElement('textarea');
+          f.value = pre.textContent; f.style.cssText = 'position:fixed;left:-9999px';
+          doc.body.appendChild(f); f.select();
+          try { doc.execCommand('copy'); } catch (e) {}
+          if (navigator.clipboard) navigator.clipboard.writeText(pre.textContent).catch(function () {});
+          doc.body.removeChild(f);
+          b.textContent = 'Copied';
+          setTimeout(function () { b.textContent = 'Copy'; }, 2200);
+        };
+      });
+      fills();
+    }).catch(function () {
+      fail('Could not reach the generator. Check your connection and try again.');
+    });
+  }
+
   /* the saved blueprint, on its own page ---------------------------------- */
   function application() {
     var slug = (location.search.match(/[?&]c=([^&]+)/) || [])[1];
@@ -952,7 +1016,7 @@
   }
 
   /* wiring --------------------------------------------------------------- */
-  var RUN = { leak: leak, bb: buildbuy, spec: spec, auto: automation, sandbox: sandbox, blueprint: blueprint };
+  var RUN = { leak: leak, bb: buildbuy, spec: spec, auto: automation, sandbox: sandbox, blueprint: blueprint, outreach: outreach };
   if (tool === 'application') { application(); return; }
   var btn = doc.getElementById('tlRun');
   if (btn && RUN[tool]) btn.onclick = function () { RUN[tool](); };
