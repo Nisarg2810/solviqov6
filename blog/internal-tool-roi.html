@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>The real cost of tracking HSSE observations in a spreadsheet</title>
-<meta name="description" content="A spreadsheet does not fail loudly. It fails quietly, one overwritten row and one missed follow-up at a time, until an audit finds the gap for you.">
+<title>What an internal tool costs, and when it pays for itself</title>
+<meta name="description" content="Internal tools are the easiest investment to justify and the hardest to get approved, because the saving is spread across people rather than showing up as a l">
 <meta name="theme-color" content="#05070C">
-<meta property="og:title" content="The real cost of tracking HSSE observations in a spreadsheet">
-<meta property="og:description" content="A spreadsheet does not fail loudly. It fails quietly, one overwritten row and one missed follow-up at a time, until an audit finds the gap for you.">
+<meta property="og:title" content="What an internal tool costs, and when it pays for itself">
+<meta property="og:description" content="Internal tools are the easiest investment to justify and the hardest to get approved, because the saving is spread across people rather than showing up as a l">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://solviqodigital.com/blog/hsse-spreadsheet-cost.html">
+<meta property="og:url" content="https://solviqodigital.com/blog/internal-tool-roi.html">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 240'%3E%3Crect width='240' height='240' rx='48' fill='%2305070C'/%3E%3Cg transform='translate(70,168) rotate(-25) scale(0.62)'%3E%3Cpolyline points='-27,-30 28,0 -27,30' fill='none' stroke='%235B6779' stroke-width='18'/%3E%3C/g%3E%3Cg transform='translate(118,128) rotate(-12) scale(0.82)'%3E%3Cpolyline points='-27,-30 28,0 -27,30' fill='none' stroke='%239FAABA' stroke-width='18'/%3E%3C/g%3E%3Cg transform='translate(172,72) rotate(2) scale(1.05)'%3E%3Cpolyline points='-27,-30 28,0 -27,30' fill='none' stroke='%23E2E8F0' stroke-width='18'/%3E%3C/g%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -17,9 +17,9 @@
 <link rel="stylesheet" href="../assets/site.css?v=33">
 <script>(function(){try{var t=localStorage.getItem('solviqo-theme');if(!t)t=matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',t);}catch(e){document.documentElement.setAttribute('data-theme','dark');}})();</script>
 <script>try{if(!sessionStorage.getItem('sv-seen')&&!matchMedia('(prefers-reduced-motion: reduce)').matches)document.documentElement.classList.add('is-loading');}catch(e){}</script>
-<link rel="canonical" href="https://solviqodigital.com/blog/hsse-spreadsheet-cost.html">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"The real cost of tracking HSSE observations in a spreadsheet","description":"A spreadsheet does not fail loudly. It fails quietly, one overwritten row and one missed follow-up at a time, until an audit finds the gap for you.","datePublished":"2026-07-28","dateModified":"2026-07-28","author":{"@type":"Person","name":"Nisarg Mehta"},"publisher":{"@type":"Organization","name":"Solviqo","@id":"https://solviqodigital.com/#org"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://solviqodigital.com/blog/hsse-spreadsheet-cost.html"},"articleSection":"HSSE"}</script>
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://solviqodigital.com/"},{"@type":"ListItem","position":2,"name":"Blog","item":"https://solviqodigital.com/blog.html"},{"@type":"ListItem","position":3,"name":"The real cost of tracking HSSE observations in a spreadsheet","item":"https://solviqodigital.com/blog/hsse-spreadsheet-cost.html"}]}</script>
+<link rel="canonical" href="https://solviqodigital.com/blog/internal-tool-roi.html">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"What an internal tool costs, and when it pays for itself","description":"Internal tools are the easiest investment to justify and the hardest to get approved, because the saving is spread across people rather than showing up as a line item. Here is how to do the maths.","datePublished":"2026-10-09","dateModified":"2026-10-09","author":{"@type":"Person","name":"Nisarg Mehta"},"publisher":{"@type":"Organization","name":"Solviqo","@id":"https://solviqodigital.com/#org"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://solviqodigital.com/blog/internal-tool-roi.html"},"articleSection":"Operations"}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://solviqodigital.com/"},{"@type":"ListItem","position":2,"name":"Blog","item":"https://solviqodigital.com/blog.html"},{"@type":"ListItem","position":3,"name":"What an internal tool costs, and when it pays for itself","item":"https://solviqodigital.com/blog/internal-tool-roi.html"}]}</script>
 </head>
 <body>
 <div class="loader" aria-hidden="true"><div class="ld-in">
@@ -89,23 +89,30 @@
 
   <section class="hero" style="padding-bottom:20px">
     <div class="wrap" style="max-width:780px">
-      <nav class="crumbs rev" aria-label="Breadcrumb"><a href="../index.html">Home</a> <span>/</span> <a href="../blog.html">Blog</a> <span>/</span> <span>HSSE</span></nav>
-      <span class="kick rev"><b>HSS</b> HSSE &middot; 5 min read</span>
-      <h1 class="rev" data-split="1">The real cost of tracking HSSE observations in a spreadsheet</h1>
-      <p class="lede rev">A spreadsheet does not fail loudly. It fails quietly, one overwritten row and one missed follow-up at a time, until an audit finds the gap for you.</p>
-      <p class="rev" style="color:var(--t2);font-size:14px;margin-top:14px">Published 2026-07-28 by Nisarg Mehta, Solviqo</p>
+      <nav class="crumbs rev" aria-label="Breadcrumb"><a href="../index.html">Home</a> <span>/</span> <a href="../blog.html">Blog</a> <span>/</span> <span>Operations</span></nav>
+      <span class="kick rev"><b>OPE</b> Operations &middot; 7 min read</span>
+      <h1 class="rev" data-split="1">What an internal tool costs, and when it pays for itself</h1>
+      <p class="lede rev">Internal tools are the easiest investment to justify and the hardest to get approved, because the saving is spread across people rather than showing up as a line item. Here is how to do the maths.</p>
+      <p class="rev" style="color:var(--t2);font-size:14px;margin-top:14px">Published 2026-10-09 by Nisarg Mehta, Solviqo</p>
     </div>
   </section>
   <section class="sec" style="padding-top:10px">
     <div class="wrap article rev" style="max-width:720px">
-      <p>Ask an HSSE manager how observations get logged and most describe the same system: a shared Excel file, one column per site, one row per incident, updated by whoever got to the laptop first that week.</p>
-<h2>Where it actually breaks</h2>
-<ul><li>Two people editing the same file at once, and one set of entries quietly overwriting the other.</li><li>A site supervisor logging an observation on a phone, in a text message, meaning to add it to the sheet later.</li><li>No enforced closure. A hazard gets logged as open and nobody owns turning it into closed.</li><li>No trend visibility. Nobody can say, in a five minute glance, whether near misses are rising on a specific site.</li></ul>
-<h2>Why this stays hidden until it does not</h2>
-<p>None of this shows up as a problem in a normal month. It shows up the day an auditor asks for a closure trail on a specific incident from four months ago, and the only record is a cell that somebody overwrote in March.</p>
-<h2>What replaces it</h2>
-<p>An HSSE observation tracker does three things a spreadsheet cannot: it enforces who can log, edit and close an observation, it timestamps every change instead of quietly overwriting the last one, and it gives a site or regional manager a live view instead of a monthly export. Built as a real app, wired into the same Oracle Fusion or ERP instance your compliance team already reports out of, it becomes the system of record instead of a side file nobody trusts.</p>
-<p>None of this requires ripping out anything you already run. It requires one workflow, built once, used every day.</p>
+      <p>Nobody gets promoted for building an admin panel. Internal tools sit in the backlog behind anything customer facing, and they stay there, while the cost of not having them is paid every week in small amounts by people who have stopped mentioning it.</p>
+<p>Here is how to work out whether one is worth building, in numbers you can take to whoever signs.</p>
+<h2>The calculation</h2>
+<p>Four inputs, and you can get all of them in an afternoon by asking the people doing the work.</p>
+<ul><li>How many people touch this process</li><li>How many hours a week each of them spends on it</li><li>What an hour of their time costs, fully loaded</li><li>What proportion of that time the tool actually removes, which is never a hundred per cent and is usually between fifty and eighty</li></ul>
+<p>Multiply, annualise, compare to the build cost. An internal tool between one and a half and four lakh needs to save roughly four to ten hours a week across the team to pay back inside a year. In our experience most processes that have annoyed people enough to be mentioned are saving considerably more than that.</p>
+<h2>The savings nobody counts</h2>
+<p>The hours are the easy part and they understate it. The bigger returns are the ones that do not appear on a timesheet.</p>
+<ul><li>Errors prevented rather than found. One wrong rate caught at entry is worth more than a month of checking.</li><li>Decisions made this week instead of next. Latency in information is a real cost and nobody measures it.</li><li>The thing that stops being a single person&#x27;s job. Resilience has a value and you discover it when they resign.</li><li>Work people stop avoiding. A process that is painful gets done late, and late has downstream costs.</li></ul>
+<h2>When not to build</h2>
+<p>We talk clients out of internal tools regularly, and the reasons are consistent.</p>
+<ul><li>The process is about to change. Build the tool after the change, not before.</li><li>It is one person&#x27;s preference rather than a team&#x27;s problem. A tool for one enthusiastic user becomes shelfware when they move on.</li><li>A product already does it well. Buy it. Configure it properly. Move on.</li><li>The real problem is that nobody has decided who owns the process. Software will not decide that for you, and automating an unowned process just makes the confusion faster.</li></ul>
+<h2>Start smaller than feels sensible</h2>
+<p>The most common failure is not a bad build, it is too large a first build. A tool with forty features takes four months, by which time the people who asked for it have lost interest and built a workaround. A tool with eight features takes three weeks, gets used, and tells you exactly what the next eight should be.</p>
+<p>Everything we have built that is still in daily use years later started smaller than the client originally wanted. Everything that quietly died started bigger.</p>
     </div>
   </section>
   <section class="sec">
@@ -115,7 +122,7 @@
         <p class="lede" style="margin-top:12px">Twenty minutes on a call and we will tell you whether it is worth building, what it would cost, and how long it would take. If the answer is that you do not need us, we say that too.</p>
         <div style="margin-top:22px"><a class="btn btn-primary btn-lg" href="https://cal.com/nisarg-mehta/solviqo/" target="_blank" rel="noopener">Book a call<span class="shine"></span></a></div>
       </div>
-      <p class="rev" style="margin-top:30px"><a class="card-link" href="custom-software-development-cost-india.html">Read next: What custom software actually costs in India, and what moves the number <svg class="ar" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h12M13 6l6 6-6 6"/></svg></a></p>
+      <p class="rev" style="margin-top:30px"><a class="card-link" href="four-week-software-project.html">Read next: What four weeks of software development actually buys you <svg class="ar" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h12M13 6l6 6-6 6"/></svg></a></p>
     </div>
   </section>
 
