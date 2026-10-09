@@ -288,7 +288,7 @@
   var ARROW = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
 
   function postCard(p) {
-    return '<a class="card has-cover" data-tilt="6" href="blog.html?slug=' + encodeURIComponent(p.slug) + '">' +
+    return '<a class="card has-cover" data-tilt="6" href="blog/' + encodeURIComponent(p.slug) + '.html">' +
       '<span class="cover"><canvas data-seed="' + esc(p.title) + '"' + (p.art !== undefined ? ' data-kind="' + esc(p.art) + '"' : '') + '></canvas></span>' +
       '<span class="card-body">' +
         '<span class="post-meta"><span class="badge amber">' + esc(p.category) + '</span>' +
@@ -359,7 +359,7 @@
   function initBlog() {
     var list = doc.getElementById('postList'), detail = doc.getElementById('postDetail');
     if (!list && !detail) return;
-    fetch('data/posts.json?v=4').then(function (r) { return r.json(); }).then(function (posts) {
+    fetch('data/posts.json?v=5').then(function (r) { return r.json(); }).then(function (posts) {
       posts.sort(function (a, b) { return new Date(b.date) - new Date(a.date); });
       var slug = slugParam();
       if (slug) {
@@ -433,7 +433,7 @@
 
   function initHomeTeasers() {
     var pt = doc.getElementById('homePosts'), ct = doc.getElementById('homeCases');
-    if (pt) fetch('data/posts.json?v=4').then(function (r) { return r.json(); }).then(function (p) {
+    if (pt) fetch('data/posts.json?v=5').then(function (r) { return r.json(); }).then(function (p) {
       p.sort(function (a, b) { return new Date(b.date) - new Date(a.date); });
       pt.innerHTML = p.slice(0, 2).map(postCard).join(''); pt.classList.add('in'); paintCovers(pt); armTilt(pt);
     }).catch(function () {});
